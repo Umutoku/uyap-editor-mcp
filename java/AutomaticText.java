@@ -3,7 +3,6 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,7 +191,7 @@ final class AutomaticText {
     }
 
     private static String storeFragment(Path store, Path fragment, String value) throws Exception {
-        Path source = Paths.get(value).toRealPath();
+        Path source = EditorFileScope.profileInput(value, "AUTO_TEXT_FRAGMENT_INVALID").toPath();
         require(source.getParent().equals(store.getParent())
             && source.getFileName().toString().matches("\\.auto-text-[0-9a-f]+\\.udf"), "AUTO_TEXT_FRAGMENT_INVALID");
         Document doc = loadFragment(source).getDocument();
@@ -298,10 +297,12 @@ final class AutomaticText {
     }
 
     private static Path checkedStore() throws Exception {
-        Path home = Paths.get(System.getProperty("user.home")).toRealPath();
-        Path store = home.resolve(".uki");
-        Files.createDirectories(store);
-        require(store.toRealPath().equals(store), "AUTO_TEXT_PROFILE_INVALID");
+        Path store = EditorFileScope.profile().resolve(".uki");
+        if (!Files.exists(store, LinkOption.NOFOLLOW_LINKS)) {
+            Files.createDirectory(store);
+        }
+        require(Files.isDirectory(store, LinkOption.NOFOLLOW_LINKS)
+            && store.toRealPath().equals(store), "AUTO_TEXT_PROFILE_INVALID");
         for (String name : new String[] { "autoText.xml", "tercihler.xml" }) {
             checkedExistingFile(store.resolve(name));
         }

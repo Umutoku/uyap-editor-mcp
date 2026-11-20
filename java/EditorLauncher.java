@@ -153,12 +153,14 @@ public final class EditorLauncher {
         String launch = args.length == 2 ? args[1] : "document";
         templateMode = "template".equals(launch) || "template-new".equals(launch);
         boolean create = "new".equals(launch) || "template-new".equals(launch);
+        EditorFileScope.initialize();
+        String source = create ? args[0] : EditorFileScope.profileInput(args[0], "INVALID_STAGING_PATH").getPath();
         String[] editorArgs;
         if (templateMode) {
             editorArgs = create ? new String[] { "getNewWPInstance", TEMPLATE_MODE }
-                : new String[] { "getNewWPInstance", TEMPLATE_MODE, args[0] };
+                : new String[] { "getNewWPInstance", TEMPLATE_MODE, source };
         } else {
-            editorArgs = create ? new String[0] : new String[] { "getNewWPInstance", args[0] };
+            editorArgs = create ? new String[0] : new String[] { "getNewWPInstance", source };
         }
         Class.forName(ENTRY_CLASS).getMethod("main", String[].class).invoke(null, (Object) editorArgs);
 
@@ -170,7 +172,7 @@ public final class EditorLauncher {
                 for (int i = 0; i < fields.length; i++) {
                     fields[i] = new String(Base64.getDecoder().decode(request[i + 2]), StandardCharsets.UTF_8);
                 }
-                String[] response = dispatch(request[1], fields, args[0]);
+                String[] response = dispatch(request[1], fields, source);
                 write(wire, request[0], "OK", response);
                 if ("close".equals(request[1])) {
                     return;
@@ -495,15 +497,15 @@ public final class EditorLauncher {
     }
 
     private static String exportPdf(String path) throws Exception {
+        File output = EditorFileScope.newOutput(path);
         PresentationActions.PdfLiraFonts fonts = edt(() -> {
             ensure(dialog(title -> true) == null && (localDialog == null || !localDialog.isShowing()),
                 "USER_ACTION_REQUIRED");
             return PresentationActions.PdfLiraFonts.prepare(body());
         });
         try {
-            String command = export(path, "PDF Olarak Kaydet", "pdf", false);
+            String command = export(output, "PDF Olarak Kaydet", "pdf", false);
             if (fonts.changed()) {
-                File output = new File(path);
                 waitFor(() -> hasPdfTrailer(output) ? Boolean.TRUE : null, "PDF_LIRA_EXPORT_UNVERIFIED");
             }
             return command;
@@ -533,7 +535,10 @@ public final class EditorLauncher {
     }
 
     private static String export(String path, String label, String extension, boolean selectFormat) throws Exception {
-        File file = new File(path);
+        return export(EditorFileScope.newOutput(path), label, extension, selectFormat);
+    }
+
+    private static String export(File file, String label, String extension, boolean selectFormat) throws Exception {
         ensure(file.isAbsolute() && file.getName().endsWith("." + extension) && !file.exists(), "INVALID_STAGING_PATH");
         boolean doc = "doc".equals(extension);
         FutureTask<Void> opening;
@@ -638,7 +643,7 @@ public final class EditorLauncher {
     private static String[] restoreNativeBackup(String path) throws Exception {
         final String name = "MCP-Recovery.udf";
         File staged = new File(Utils.f(), "~" + name);
-        File target = new File(path);
+        File target = EditorFileScope.newOutput(path);
         ensure(!templateMode && staged.isFile() && target.isAbsolute() && target.getName().endsWith(".udf")
             && !target.exists(), "INVALID_STAGING_PATH");
         edt(() -> {
@@ -722,7 +727,7 @@ public final class EditorLauncher {
             case "svg": mime = "image/svg+xml"; break;
             default: throw new UiFailure("SAVE_FORMAT_UNAVAILABLE");
         }
-        File target = new File(path);
+        File target = EditorFileScope.newOutput(path);
         ensure(target.isAbsolute() && target.getName().endsWith("." + extension) && !target.exists(),
             "INVALID_STAGING_PATH");
         return edt(() -> {
@@ -824,8 +829,7 @@ public final class EditorLauncher {
     }
 
     private static String[] importRtf(String path) throws Exception {
-        File file = new File(path);
-        ensure(file.isAbsolute() && file.isFile(), "IMPORT_SOURCE_INVALID");
+        File file = EditorFileScope.profileInput(path, "IMPORT_SOURCE_INVALID");
         JFileChooser chooser = documentChooser(true);
         try {
             edt(() -> {
@@ -2189,8 +2193,8 @@ public final class EditorLauncher {
 
     private static String[] compareUdf(String path, String decision, String output, int limit, String changeId, int offset,
         String direction, String fromChangeId) throws Exception {
-        File baseline = new File(path);
-        ensure(!templateMode && baseline.isAbsolute() && baseline.isFile(), "COMPARISON_INPUT_INVALID");
+        ensure(!templateMode, "COMPARISON_INPUT_INVALID");
+        File baseline = EditorFileScope.comparisonInput(path);
         Frame original = frame;
         List<Window> existing = edt(() -> Arrays.asList(Window.getWindows()));
         Action compareAction = edt(() -> {
@@ -2327,8 +2331,7 @@ public final class EditorLauncher {
     }
 
     private static void writeNativeUdf(String output) throws Exception {
-        File target = new File(output);
-        ensure(target.isAbsolute() && !target.exists(), "INVALID_STAGING_PATH");
+        File target = EditorFileScope.newOutput(output);
         try (OutputStream stream = Files.newOutputStream(target.toPath(), StandardOpenOption.CREATE_NEW)) {
             writeNativeUdf(stream);
         }
@@ -2574,8 +2577,7 @@ public final class EditorLauncher {
         ensure("insert-image".equals(action) || "insert-background-image".equals(action), "IMAGE_ACTION_INVALID");
         boolean background = "insert-background-image".equals(action);
         String editorClass = "tr.com.havelsan.uyap.system.editor.common.gui." + (background ? "gR" : "cz");
-        File file = new File(path);
-        ensure(file.isAbsolute() && file.isFile(), "IMAGE_SOURCE_INVALID");
+        File file = EditorFileScope.profileInput(path, "IMAGE_SOURCE_INVALID");
         int imagesBefore = edt(() -> countImages(body().getDocument().getDefaultRootElement()));
         Action insert = edt(() -> {
             ensure(dialog(title -> true) == null && body().isEditable(), "USER_ACTION_REQUIRED");

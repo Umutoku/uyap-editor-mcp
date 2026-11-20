@@ -1,6 +1,6 @@
 # Kurulum / Installation
 
-Sunucu için etkileşimli **Windows x64 masaüstü oturumu**, **UYAP Doküman Editörü 5.4.20** ve Java Access Bridge içeren **Java 8 x64** gerekir. 0.19 sürüm adayı .NET çalışma zamanını yanında taşır. GitHub Releases’teki eski 0.18.0 önizlemesi ayrıca .NET 10 x64 çalışma zamanı ister. 7z araçları için Program Files altında 7-Zip kurulu olmalıdır. UYAP JAR dosyalarının SHA-256 değerleri başlangıçta doğrulanır. [UYAP Editör](https://www.uyap.gov.tr/UYAP-Editor) · [7-Zip](https://www.7-zip.org/)
+Sunucu için etkileşimli **Windows x64 masaüstü oturumu**, **UYAP Doküman Editörü 5.4.20** ve Java Access Bridge içeren **Java 8 x64** gerekir. 0.19 Windows paketi .NET çalışma zamanını yanında taşır. GitHub Releases’teki eski 0.18.0 önizlemesi ayrıca .NET 10 x64 çalışma zamanı ister. 7z araçları için Program Files altında 7-Zip kurulu olmalıdır. UYAP JAR dosyalarının SHA-256 değerleri başlangıçta doğrulanır. [UYAP Editör](https://uyap.gov.tr/uyap-editor/) · [7-Zip](https://www.7-zip.org/)
 
 | Bileşen | Doğrulanan uyumluluk |
 | --- | --- |

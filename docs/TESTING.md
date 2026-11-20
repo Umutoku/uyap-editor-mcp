@@ -12,6 +12,8 @@ Testler etkileşimli Windows masaüstünde çalıştırıldı. Windows sanal mak
 | Doğrudan stdio | AI hesabı kullanmadan MCP başlatıldı. 65 araç listelendi, üçüncü sayfa açıldı ve üç sayfalık PDF üretildi. Kaynak UDF'nin baytları aynı kaldı. Geçersiz yol denemesinde sabit hata kodu ve kaynak dosyasından biçimlenen mesaj doğrulandı. |
 | 0.19 çalışma zamanı | `DOTNET_ROOT` ve `DOTNET_ROOT_X64` boş bir dizine ayarlandı. MCP’nin stdio başlangıcı ve paketten yüklenen .NET 10.0.15 `coreclr.dll` doğrulandı. |
 | 0.19 kurulum ve kaldırma | ZIP açıldı, çalışma zamanı dahil kuruldu ve yeniden kurulumda aynı paket kullanıldı. Kurulu kopyayla UYAP kabulü geçti. Kaldırma denemesi sırasında belgeler ve başka bir klasör korundu. |
+| Yayın ZIP’i ve resmî UYAP dağıtımları | GitHub’dan indirilen ZIP’in SHA-256 değeri doğrulandı ve ayrı dizinde kuruldu. UYAP’ın güncel Windows MSI ve EXE paketlerinde MCP’nin kullandığı yedi JAR dosyası eşleşti. [Resmî UYAP indirmeleri](https://uyap.gov.tr/uyap-editor/) |
+| MCP Inspector 2.16.0 | Yayın paketindeki 65 araç listelendi ve durum çağrısı geçti. Inspector, 25 aracın girdi veya çıktı şemasında 83 JSON Schema taşınabilirlik uyarısı bildirdi. [MCP Inspector](https://github.com/modelcontextprotocol/inspector) |
 | Gemini CLI 0.60.0 | Ayrı proje yapılandırmasında yerel stdio sunucusu `Connected` olarak keşfedildi. Belge üzerinden uçtan uca Gemini testi bekliyor. |
 | Claude Code 2.1.329 | Ayrı proje yapılandırmasında yerel stdio sunucusu `Connected` olarak keşfedildi. Belge üzerinden uçtan uca Claude Code testi bekliyor. |
 | Claude Desktop | MCPB manifesti resmî CLI ile doğrulandı. Uygulama içinden kurulum ve belge testi bekliyor. |
@@ -27,7 +29,11 @@ IMZ kabulü, bu test için üretilen ve Windows tarafından güvenilir sayılmay
 
 `set-tooltip-enable` adlı UYAP 5.4.20 komutu yerel bir yardım ayarını değiştirmek yerine tarayıcıda eski yardım adresini açar. MCP onay hazırlığında güncel HTTPS yardım adresini gösterir. Yerel yardım ayarı için kabul sayısına eklenmedi.
 
-Temiz derlemede 16 onay hazırlığı yeniden geçti. Ayrı PDF denemesinde kaydedilmemiş ekleme ve geri alma, üretilen PDF'de doğrulandı. UYAP, o denemede değişiklik ve geri alma adımlarında şerit düğmesi yerine dahili PDF eylemine geçti. Dolayısıyla yalnızca şerit yolunu şart koşan tekrar testi açık kaldı.
+Yayın ZIP’inden kurulan MCP, resmî EXE’nin UYAP dosyalarıyla genişletilmiş kabulü geçti. Kaydedilmemiş metin PDF’de göründü. Geri alma sonrasında metin PDF’den çıktı. İlk çıktı PDF şerit komutundan, ikinci çıktı editörün dahili PDF eyleminden geldi. Oturumu yanlışlıkla kapatma engellendi ve kullanıcıya ait kaynak UDF korunarak ayrı bir UDF kopyası kaydedildi. Aynı koşuda 16 onay hazırlığı da geçti.
+
+0.19 önizleme kurucusu, .NET çalışma zamanı dosyası eksik olan aynı sürümü yeniden kullanabiliyordu. 0.19.0 kurucusu dağıtımdaki uygulama dosyalarının tamamını yeniden kullanım öncesi doğrular. Eksik çalışma zamanı reddedildi. Kaldırıp kurma denemesi çalışma zamanını geri yükledi ve örnek belgeyi korudu.
+
+Java dosya kapsamı kabulü, yönetilen RTF, görsel, karşılaştırma kopyası, zengin otomatik metin ve yerel yedek akışlarını çalıştırır. Ayrıca alt klasöre SVG ve UDF çıktısı alır.
 
 ## .NET kabul testini tekrarlama
 

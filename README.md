@@ -2,7 +2,7 @@
 
 ![UYAP Editor MCP mimarisi](docs/images/uyap-editor-mcp.png)
 
-UYAP Doküman Editörü 5.4.20’yi **Windows x64’te yerel olarak** kullanan 65 araçlık bir MCP sunucusu. Codex, Claude, Gemini CLI, Antigravity ve OpenCode üzerinden UDF açabilir, sayfalar arasında gezebilir, düzenleme yapabilir ve editörün kendi menüleriyle çıktı alabilirsin.
+UYAP Doküman Editörü 5.4.20’yi **Windows x64’te yerel olarak** kullanan 65 araçlık bir MCP sunucusu. UDF açabilir, sayfalar arasında gezebilir, belgeyi düzenleyebilir ve editörün kendi menüleriyle çıktı alabilirsin. Codex ile belge akışı doğrulandı. Claude, Gemini CLI, Antigravity ve OpenCode için kurulum ve test durumu aşağıda yer alıyor.
 
 Sunucu Windows’ta ayrı bir süreç olarak çalışır. İstemci araç çağrılarını ve sonuçlarını `stdio` üzerinden alır ve gönderir. Proje belge, kullanım verisi veya telemetri toplamaz. Belge metnini isteyen bir çağrı yaparsan seçtiğin AI istemcisi bu metni alır ve kendi veri politikasını uygular. [Gizlilik ve veri akışı](PRIVACY.md)
 
@@ -34,7 +34,7 @@ MCP ve UYAP, aynı etkileşimli Windows oturumunda çalışır. Editör gerekti�
 2. [Resmî UYAP Editör](https://www.uyap.gov.tr/UYAP-Editor) sürümünü kur. `editor_lib.jar` dosyasının bulunduğu klasörü belirle.
 3. Var olan uyumlu Java 8 x64 kurulumunun `bin` klasörünü kullan. Bu klasörde `java.exe` ve `WindowsAccessBridge-64.dll` bulunur.
 
-**0.19 Windows sürüm adayında .NET çalışma zamanı arşivin içine dahildir.** Java, editörün çalışması ve Java Access Bridge üzerinden penceresine erişim için kullanılır. `.exe`, MCP istemcisinin yerel sunucuyu başlattığı Windows dosyasıdır. 7z araçları için ayrıca [7-Zip](https://www.7-zip.org/) gerekir.
+**0.19 Windows paketinde .NET çalışma zamanı arşivin içine dahildir.** Java, editörün çalışması ve Java Access Bridge üzerinden penceresine erişim için kullanılır. `.exe`, MCP istemcisinin yerel sunucuyu başlattığı Windows dosyasıdır. 7z araçları için ayrıca [7-Zip](https://www.7-zip.org/) gerekir.
 
 Eski `0.18.0` önizlemesi ayrı .NET 10 x64 çalışma zamanı ister. O sürümün çevrimiçi tarama bulgusu [sürüm notunda](https://github.com/Umutoku/uyap-editor-mcp/releases/tag/v0.18.0) bulunur.
 
@@ -180,7 +180,7 @@ Kurucuyla yapılan kurulumdaki program dosyaları kaldırılır. `UyapEditorMcpD
 | Antigravity ve OpenCode | Windows yerel stdio kurulumları belgelendi. OpenCode yerel sunucuya bağlandı. Antigravity uygulama testi açık. |
 | Yerel UYAP eylemleri | 244/275 tam kabul. E-posta teslimatı, yazıcıya gönderim, kart, mobil imza ve portalın son adımları ayrı kayıtlarda. |
 
-**0.19 Windows önizlemesi gerçek Windows x64 masaüstünde test edildi.** Test ortamında gerçek akıllı kart, nitelikli e-imza ve Windows sanal makinesi bulunmuyordu. Kurgu imzalı UDF’den IMZ dışa aktarımı doğrulandı. Kart ve mobil imza ile imzalama, UYAP’ta kart sertifikası doğrulama ve yetkili portal kaydı açık.
+**0.19 Windows paketi etkileşimli Windows x64 masaüstünde test edildi.** Sürümün kapsamı doğrulanan yerel belge işlemleridir. Test ortamında gerçek akıllı kart, nitelikli e-imza ve Windows sanal makinesi bulunmuyordu. Kurgu imzalı UDF’den IMZ dışa aktarımı doğrulandı. Kart ve mobil imza ile imzalama, UYAP’ta kart sertifikası doğrulama ve yetkili portal kaydı açık.
 
 Kalan 31 eylem kaydının 5’i imza, sertifika ve portal işlemlerine, 10’u son kullanıcı adımı açık olan e-posta, yazdırma ve editör ayarlarına ait. Diğer 16 kayıt, 15 editör içi işleyici ile 5.4.20’de kapalı olan yerel şifreleme eylemini kapsar. Yerel şifreleme için MCP’nin AES korumalı 7z oluşturma ve açma akışı geçti.
 

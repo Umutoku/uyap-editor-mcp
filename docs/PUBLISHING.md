@@ -2,7 +2,7 @@
 
 | Kanal | Dağıtım | Durum |
 | --- | --- | --- |
-| GitHub Releases | Windows ZIP ve MCPB | [0.19 Windows önizlemesi](https://github.com/Umutoku/uyap-editor-mcp/releases/tag/v0.19.0-preview.1). 0.18.0 çevrimiçi tarama bulgusu kendi sürüm notunda. |
+| GitHub Releases | Windows ZIP ve MCPB | [0.19.0 Windows sürümü](https://github.com/Umutoku/uyap-editor-mcp/releases/tag/v0.19.0). 0.18.0 çevrimiçi tarama bulgusu kendi sürüm notunda. |
 | Resmî MCP Registry | GitHub Releases’teki MCPB bağlantısı ve SHA-256 | `io.github.umutoku/uyap-editor-mcp` için metadata hazır. 0.18.0 kaydı başarılı olmadı. |
 | GitHub MCP Registry | GitHub’ın katalog listelemesi | Ayrı katalog. Bu projenin listelendiği doğrulanmadı. [GitHub MCP Registry](https://github.com/mcp) |
 | Claude Desktop | Windows MCPB uzantısını kullanıcı ekler | MCPB manifesti doğrulandı. İstemci içi kurulum testi açık. |

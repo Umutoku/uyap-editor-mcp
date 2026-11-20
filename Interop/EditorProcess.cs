@@ -8,6 +8,8 @@ internal sealed class EditorProcess : IDisposable
 {
     private const string AssistiveTechnology =
         "-Djavax.accessibility.assistive_technologies=com.sun.java.accessibility.AccessBridge";
+    private const string StateRootProperty = "-Duyap.mcp.stateRoot=";
+    private const string OutputRootProperty = "-Duyap.mcp.outputRoot=";
     private readonly Process process;
     private int sequence;
     private bool uncertain;
@@ -26,6 +28,7 @@ internal sealed class EditorProcess : IDisposable
             StandardOutputEncoding = Encoding.UTF8,
         };
         foreach (var argument in new[] { "-Duser.home=" + profile, AssistiveTechnology,
+                     StateRootProperty + config.StateDir, OutputRootProperty + config.OutputRoot,
                      "-cp", config.ClassPath, "EditorLauncher", stagedFile })
             start.ArgumentList.Add(argument);
         if (templateMode)

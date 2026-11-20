@@ -15,10 +15,11 @@ if (args.Length is < 4 or > 5)
 var scratch = Directory.CreateTempSubdirectory("uyap-mcp-acceptance-");
 try
 {
-    using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(4));
+    using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(5));
     var input = scratch.CreateSubdirectory("input");
     var output = scratch.CreateSubdirectory("output");
     var state = scratch.CreateSubdirectory("state");
+    var backups = scratch.CreateSubdirectory("backups");
     var source = Path.Combine(input.FullName, "synthetic.udf");
     File.Copy(Path.GetFullPath(args[3]), source);
     string? signedSource = null;
@@ -35,13 +36,14 @@ try
         RedirectStandardInput = true,
         RedirectStandardOutput = true,
         ArgumentList = { "--editor-dir", Path.GetFullPath(args[1]), "--java-bin", Path.GetFullPath(args[2]),
-            "--input-root", input.FullName, "--output-root", output.FullName, "--state-dir", state.FullName },
+            "--input-root", input.FullName, "--output-root", output.FullName, "--state-dir", state.FullName,
+            "--backup-root", backups.FullName },
     };
     using var server = Process.Start(start) ?? throw new InvalidOperationException("The acceptance server did not start.");
     var transport = new StreamClientTransport(server.StandardInput.BaseStream, server.StandardOutput.BaseStream);
     try
     {
-        return await Run(transport, timeout.Token, source, original, input.FullName, output.FullName, signedSource);
+        return await Run(transport, timeout.Token, source, original, input.FullName, output.FullName, signedSource, backups.FullName);
     }
     finally
     {
@@ -58,7 +60,7 @@ finally
 }
 
 static async Task<int> Run(StreamClientTransport transport, CancellationToken cancellationToken,
-    string source, byte[] original, string input, string output, string? signedSource)
+    string source, byte[] original, string input, string output, string? signedSource, string backups)
 {
     await using var client = await McpClient.CreateAsync(transport, cancellationToken: cancellationToken);
     var tools = await client.ListToolsAsync(cancellationToken: cancellationToken);
@@ -72,7 +74,7 @@ static async Task<int> Run(StreamClientTransport transport, CancellationToken ca
     Require(ready.GetProperty("bridge").GetString() == "ready for a managed document", "Unexpected initial bridge status.");
     await test.ExpectError(McpToolNames.Open, "PATH_OUTSIDE_SCOPE: Use an absolute .udf path",
         ("path", Path.Combine(Path.GetDirectoryName(input)!, "outside.udf")));
-    var opened = await test.Call(McpToolNames.Open, ("path", source));
+    var opened = await test.Call(McpToolNames.Open, ("path", source), ("editable", true));
     var id = opened.GetProperty("documentId").GetString()!;
     var page = await test.Call(McpToolNames.GoToPage, ("documentId", id), ("page", 3));
     Require(page.GetProperty("page").GetInt32() == 3, "Page navigation failed.");
@@ -80,8 +82,10 @@ static async Task<int> Run(StreamClientTransport transport, CancellationToken ca
     var exported = await test.Call(McpToolNames.ExportPdf, ("documentId", id), ("outputPath", pdf));
     Require(exported.GetProperty("pageCount").GetInt32() == 3 &&
         File.ReadAllBytes(pdf).AsSpan().StartsWith("%PDF-"u8), "The native PDF was invalid.");
+    await PdfEditAcceptance.Run(test, id, output);
     await test.Call(McpToolNames.Close, ("documentId", id));
 
+    await FileScopeAcceptance.Run(test, source, input, output, backups);
     await ArchiveAcceptance.Run(test, source, input, output);
     if (signedSource != null)
         await SignedImzAcceptance.Run(test, signedSource, output);
@@ -93,6 +97,8 @@ static async Task<int> Run(StreamClientTransport transport, CancellationToken ca
         tools = tools.Count,
         page = 3,
         pdfPages = 3,
+        pdfEditsAndUndoPassed = true,
+        fileScopePassed = true,
         sourceUnchanged = true,
         resourceDescriptions = true,
         formattedResourceErrors = true,

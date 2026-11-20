@@ -8,15 +8,15 @@
     "source": "github"
   },
   "websiteUrl": "https://github.com/Umutoku/uyap-editor-mcp",
-  "version": "0.19.0-preview.1",
+  "version": "0.19.0",
   "packages": [
     {
+      "fileSha256": "c5bdd96ed6227b7473200dcdcb86a5e4ff0713cbd569c1558549940775d85470",
       "transport": {
         "type": "stdio"
       },
       "registryType": "mcpb",
-      "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.19.0-preview.1/uyap-editor-mcp-0.19.0-preview.1-windows-x64.mcpb",
-      "fileSha256": "5d45103d931dcf47e9ecdf4a15961f33e8f0e72b1e89fd42560064fde5e90d6e"
+      "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.19.0/uyap-editor-mcp-0.19.0-windows-x64.mcpb"
     }
   ]
 }

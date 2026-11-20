@@ -29,6 +29,24 @@ function Get-ManagedInstall($Directory) {
     if ($note.product -eq $product -and $note.version -eq $Directory.Name) { $note }
 }
 
+function Test-InstalledApp([string]$Source, [string]$Installed) {
+    if (!(Test-Path -LiteralPath $Installed -PathType Container)) { return $false }
+    $targetRoot = Get-Item -LiteralPath $Installed -Force
+    if ($targetRoot.Attributes -band [IO.FileAttributes]::ReparsePoint) { return $false }
+    $installedFiles = Get-ChildItem -LiteralPath $Installed -Recurse -Force
+    if ($installedFiles | Where-Object { $_.Attributes -band [IO.FileAttributes]::ReparsePoint }) { return $false }
+
+    foreach ($file in Get-ChildItem -LiteralPath $Source -File -Recurse -Force) {
+        $relative = $file.FullName.Substring($Source.Length + 1)
+        $target = Join-Path $Installed $relative
+        if (!(Test-Path -LiteralPath $target -PathType Leaf) -or
+            (Get-FileHash -LiteralPath $target).Hash -ne (Get-FileHash -LiteralPath $file.FullName).Hash) {
+            return $false
+        }
+    }
+    return $true
+}
+
 if ($Uninstall) {
     if (!(Test-Path -LiteralPath $packages -PathType Container)) { return }
 
@@ -103,11 +121,10 @@ $appHash = (Get-FileHash -LiteralPath $sourceDll).Hash
 $versionFolder = Join-Path $packages $version
 if (Test-Path -LiteralPath $versionFolder) {
     $existing = Get-ManagedInstall (Get-Item -LiteralPath $versionFolder)
-    $existingDll = Join-Path $versionFolder 'app/UyapEditorMcp.dll'
+    $existingApp = Join-Path $versionFolder 'app'
     if (!$existing -or $existing.sha256 -ne $appHash -or
-        !(Test-Path -LiteralPath $existingDll -PathType Leaf) -or
-        (Get-FileHash -LiteralPath $existingDll).Hash -ne $appHash) {
-        throw 'A different installation occupies this version directory. Remove it before reinstalling.'
+        !(Test-InstalledApp $sourceApp $existingApp)) {
+        throw 'The installed version is different or incomplete. Uninstall it before reinstalling.'
     }
 } elseif ($PSCmdlet.ShouldProcess($versionFolder, 'Install the local MCP server')) {
     $null = New-Item -Path $packages -ItemType Directory -Force

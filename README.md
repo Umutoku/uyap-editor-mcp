@@ -4,7 +4,7 @@ UYAP Doküman Editörü 5.4.20’yi **Windows x64’te yerel olarak** kullanan 6
 
 ![UYAP Doküman Editörü’nde kurgu inceleme notu ve sağda üç yorum](docs/images/uyap-kurgu-inceleme.png)
 
-*Gerçek UYAP penceresinde kurgu inceleme notu ve yorumları. Aynı belgenin kurgu CMS imzalı kopyasından IMZ dışa aktarma doğrulandı.*
+*Gerçek UYAP penceresinde kurgu inceleme notu ve yorumları. IMZ dışa aktarma ayrı bir kurgu CMS imzalı UDF ile doğrulandı.*
 
 Sunucu Windows’ta ayrı bir süreç olarak çalışır. İstemci araç çağrılarını ve sonuçlarını `stdio` üzerinden alır ve gönderir. Proje belge, kullanım verisi veya telemetri toplamaz. Belge metnini isteyen bir çağrı yaparsan seçtiğin AI istemcisi bu metni alır ve kendi veri politikasını uygular. [Gizlilik ve veri akışı](PRIVACY.md)
 

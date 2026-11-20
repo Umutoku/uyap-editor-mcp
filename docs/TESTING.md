@@ -27,6 +27,8 @@ Testler etkileşimli Windows masaüstünde çalıştırıldı. Windows sanal mak
 
 IMZ kabulü, bu test için üretilen ve Windows tarafından güvenilir sayılmayan CMS imzalı UDF’yi açar. Editörün Dışa Aktar komutundan çıkan IMZ baytları, UDF içindeki imza verisiyle karşılaştırılır. Kaynak UDF’nin değişmediği ayrıca kontrol edilir. Nitelikli sertifika güveni, kartla imza ve portal kaydı ayrı kabul konularıdır. [Eylem tablosu](uyap-5.4.20-actions.md)
 
+README’deki üç yorumlu inceleme belgesi gerçek UYAP yorum görünümünden çekildi. Bu ek örneğin kurgu imzalı kopyası açıldı. IMZ çıktı doğrulaması bu örnekte geçmedi. IMZ kabulü ayrı kurgu test dosyasıyla geçti.
+
 `set-tooltip-enable` adlı UYAP 5.4.20 komutu yerel bir yardım ayarını değiştirmek yerine tarayıcıda eski yardım adresini açar. MCP onay hazırlığında güncel HTTPS yardım adresini gösterir. Yerel yardım ayarı için kabul sayısına eklenmedi.
 
 Yayın ZIP’inden kurulan MCP, resmî EXE’nin UYAP dosyalarıyla genişletilmiş kabulü geçti. Kaydedilmemiş metin PDF’de göründü. Geri alma sonrasında metin PDF’den çıktı. İlk çıktı PDF şerit komutundan, ikinci çıktı editörün dahili PDF eyleminden geldi. Oturumu yanlışlıkla kapatma engellendi ve kullanıcıya ait kaynak UDF korunarak ayrı bir UDF kopyası kaydedildi. Aynı koşuda 16 onay hazırlığı da geçti.

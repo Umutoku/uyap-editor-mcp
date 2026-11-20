@@ -4,8 +4,8 @@
   "title": "UYAP Editor MCP",
   "description": "Local UYAP Document Editor tools for Windows x64",
   "repository": {
-    "url": "https://github.com/Umutoku/uyap-editor-mcp",
-    "source": "github"
+    "source": "github",
+    "url": "https://github.com/Umutoku/uyap-editor-mcp"
   },
   "websiteUrl": "https://github.com/Umutoku/uyap-editor-mcp",
   "version": "0.19.0",
@@ -14,8 +14,8 @@
       "transport": {
         "type": "stdio"
       },
-      "fileSha256": "98ee83f4d2ca4c72b8718fd7ad520b677a1dd336964a08edd5eac0ee55ddce2a",
       "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.19.0/uyap-editor-mcp-0.19.0-windows-x64.mcpb",
+      "fileSha256": "7ece2b8a6574827476e0528447c80c32b041ad8bce43991c426837b413591a4c",
       "registryType": "mcpb"
     }
   ]

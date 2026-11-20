@@ -44,7 +44,7 @@ $bundleFile = [IO.Path]::GetFileName($mcpb)
 $repositoryUrl = $manifest.repository.url
 $metadata = [ordered]@{
     '$schema' = 'https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json'
-    name = 'io.github.umutoku/uyap-editor-mcp'
+    name = 'io.github.Umutoku/uyap-editor-mcp'
     title = $manifest.display_name
     description = $manifest.description
     repository = @{ url = $repositoryUrl; source = 'github' }

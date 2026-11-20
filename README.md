@@ -192,7 +192,7 @@ Kalan 31 eylem kaydının 5’i imza, sertifika ve portal işlemlerine, 10’u s
 
 ## MCP katalogları
 
-Dağıtım dosyaları GitHub Releases’te yayımlanır. Resmî MCP Registry için `server.json` dosyası, GitHub’daki MCPB paketinin bağlantısını ve SHA-256 değerini taşır. Registry kimliği `io.github.umutoku/uyap-editor-mcp`. Pazaryeri kayıt adımları ve mevcut yayın durumu ayrı belgede. [Katalog yayını](docs/PUBLISHING.md)
+Dağıtım dosyaları GitHub Releases’te yayımlanır. Resmî MCP Registry için `server.json` dosyası, GitHub’daki MCPB paketinin bağlantısını ve SHA-256 değerini taşır. Registry kimliği `io.github.Umutoku/uyap-editor-mcp`. Pazaryeri kayıt adımları ve mevcut yayın durumu ayrı belgede. [Katalog yayını](docs/PUBLISHING.md)
 
 ## Geliştirme
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.umutoku/uyap-editor-mcp",
+  "name": "io.github.Umutoku/uyap-editor-mcp",
   "title": "UYAP Editor MCP",
   "description": "Local UYAP Document Editor tools for Windows x64",
   "repository": {

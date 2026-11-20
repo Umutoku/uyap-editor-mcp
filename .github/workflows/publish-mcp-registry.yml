@@ -41,7 +41,7 @@ jobs:
           gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern server.json
           jq -e --arg version "$VERSION" --arg repository "$base_url" \
             --arg bundle "$bundle_url" --arg digest "${digest#sha256:}" '
-              .name == "io.github.umutoku/uyap-editor-mcp"
+              .name == "io.github.Umutoku/uyap-editor-mcp"
               and .version == $version and .repository.url == $repository
               and (.packages | length == 1)
               and .packages[0].registryType == "mcpb"

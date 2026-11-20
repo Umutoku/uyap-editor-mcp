@@ -10,22 +10,8 @@ internal sealed partial class LocalEditor
     {
         var session = Get(id);
         if (session.TemplateMode)
-            throw new EditorFailure(EditorErrors.DocumentModeRequired);
-        if (decision is not ("inspect" or "accept_all" or "reject_all" or "accept_one" or "reject_one") ||
-            (decision == "inspect") != (output == null))
-            throw new EditorFailure(EditorErrors.ComparisonDecisionInvalid);
-        var individual = decision is "accept_one" or "reject_one";
-        if (individual ? string.IsNullOrWhiteSpace(changeId) || changeId.Length > 128 : changeId != null)
-            throw new EditorFailure(EditorErrors.ComparisonChangeIdInvalid);
-        if (limit is < 1 or > 50)
-            throw new EditorFailure(EditorErrors.ComparisonLimitInvalid);
-        if (offset < 0)
-            throw new EditorFailure(EditorErrors.ComparisonOffsetInvalid);
-        if (navigationDirection == null ? navigationFromChangeId != null
-            : decision != "inspect" || navigationDirection is not ("next" or "previous") ||
-              (navigationFromChangeId != null &&
-               (string.IsNullOrWhiteSpace(navigationFromChangeId) || navigationFromChangeId.Length > 128)))
-            throw new EditorFailure(EditorErrors.ComparisonNavigationInvalid);
+            throw new EditorException(EditorErrors.DocumentModeRequired);
+        ValidateComparison(decision, output, limit, changeId, offset, navigationDirection, navigationFromChangeId);
         var baseline = documents.Input(baselinePath, allowOutputRoot: true);
         var target = output == null ? null : documents.Output(output, FileExtensions.Udf);
         if (target != null)
@@ -50,39 +36,10 @@ internal sealed partial class LocalEditor
             var values = await comparisonEditor.Call(EditorBridgeCommands.CompareUdf, token, stagedBaseline, decision, pending ?? "",
                 WriteNumber(limit), changeId ?? "", WriteNumber(offset), navigationDirection ?? "",
                 navigationFromChangeId ?? "");
-            var headerLength = navigationDirection == null ? 1 : 6;
-            if (values.Length < headerLength || (values.Length - headerLength) % 7 != 0)
-                throw new EditorFailure(EditorErrors.ComparisonResponseInvalid);
-            UdfChangeNavigation? navigation = navigationDirection == null ? null
-                : values[1] == "true" ? new UdfChangeNavigation(navigationDirection + "-changes", true,
-                    ReadNumber(values[2]), ReadNumber(values[3]), values[4], values[5])
-                : new UdfChangeNavigation(navigationDirection + "-changes", false, null, null, null, null);
-            var changes = values.Skip(headerLength).Chunk(7).Select(change =>
-                new UdfChange(ReadNumber(change[0]), ReadNumber(change[1]), change[2], change[3], change[4],
-                    ReadNumber(change[5]), ReadNumber(change[6]))).ToArray();
-            var total = ReadNumber(values[0]);
-            SavedCopy? saved = null;
+            var result = ReadComparison(values, decision, offset, navigationDirection);
             if (target != null && pending != null)
-            {
-                var valid = await DocumentOutputRepository.ValidateOutput(pending, stream =>
-                {
-                    using var zip = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
-                    return zip.GetEntry(UdfEntries.Content) != null
-                        ? true
-                        : throw new InvalidDataException("The UDF content member is missing.");
-                }, token);
-                token.ThrowIfCancellationRequested();
-                DocumentOutputRepository.Publish(pending, target);
-                saved = new SavedCopy(target, valid.Bytes, valid.Digest);
-            }
-            var otherGroupsFrom = decision switch
-            {
-                "accept_one" => "baseline",
-                "reject_one" => "current",
-                _ => null,
-            };
-            int? nextOffset = offset + changes.Length < total ? offset + changes.Length : null;
-            return new UdfComparison(decision, total, changes, saved, otherGroupsFrom, offset, nextOffset, navigation);
+                return result with { Output = await PublishComparison(pending, target, token) };
+            return result;
         }
         finally
         {
@@ -95,4 +52,67 @@ internal sealed partial class LocalEditor
                 DocumentOutputRepository.DeleteTemporaryOutput(pending, uncertain: false);
         }
     }, token);
+
+    private static void ValidateComparison(string decision, string? output, int limit, string? changeId, int offset,
+        string? navigationDirection, string? navigationFromChangeId)
+    {
+        if (decision is not ("inspect" or "accept_all" or "reject_all" or "accept_one" or "reject_one") ||
+            (decision == "inspect") != (output == null))
+            throw new EditorException(EditorErrors.ComparisonDecisionInvalid);
+        var individual = decision is "accept_one" or "reject_one";
+        if (individual ? !IsComparisonChangeIdValid(changeId) : changeId != null)
+            throw new EditorException(EditorErrors.ComparisonChangeIdInvalid);
+        if (limit is < 1 or > 50)
+            throw new EditorException(EditorErrors.ComparisonLimitInvalid);
+        if (offset < 0)
+            throw new EditorException(EditorErrors.ComparisonOffsetInvalid);
+        if (navigationDirection == null ? navigationFromChangeId != null
+            : decision != "inspect" || navigationDirection is not ("next" or "previous") ||
+              navigationFromChangeId != null && !IsComparisonChangeIdValid(navigationFromChangeId))
+            throw new EditorException(EditorErrors.ComparisonNavigationInvalid);
+    }
+
+    private static bool IsComparisonChangeIdValid(string? id) =>
+        !string.IsNullOrWhiteSpace(id) && id.Length <= 128;
+
+    private static UdfComparison ReadComparison(string[] values, string decision, int offset, string? direction)
+    {
+        var headerLength = direction == null ? 1 : 6;
+        if (values.Length < headerLength || (values.Length - headerLength) % 7 != 0)
+            throw new EditorException(EditorErrors.ComparisonResponseInvalid);
+
+        var navigation = direction == null ? null : ReadChangeNavigation(direction, values);
+        var changes = values.Skip(headerLength).Chunk(7).Select(change =>
+            new UdfChange(ReadNumber(change[0]), ReadNumber(change[1]), change[2], change[3], change[4],
+                ReadNumber(change[5]), ReadNumber(change[6]))).ToArray();
+        var total = ReadNumber(values[0]);
+        var otherGroupsFrom = decision switch
+        {
+            "accept_one" => "baseline",
+            "reject_one" => "current",
+            _ => null,
+        };
+        int? nextOffset = offset + changes.Length < total ? offset + changes.Length : null;
+        return new UdfComparison(decision, total, changes, null, otherGroupsFrom, offset, nextOffset, navigation);
+    }
+
+    private static UdfChangeNavigation ReadChangeNavigation(string direction, string[] values) =>
+        values[1] == "true"
+            ? new UdfChangeNavigation(direction + "-changes", true, ReadNumber(values[2]), ReadNumber(values[3]),
+                values[4], values[5])
+            : new UdfChangeNavigation(direction + "-changes", false, null, null, null, null);
+
+    private static async Task<SavedCopy> PublishComparison(string pending, string target, CancellationToken token)
+    {
+        var valid = await DocumentOutputRepository.ValidateOutput(pending, stream =>
+        {
+            using var zip = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
+            return zip.GetEntry(UdfEntries.Content) != null
+                ? true
+                : throw new InvalidDataException("The UDF content member is missing.");
+        }, token);
+        token.ThrowIfCancellationRequested();
+        DocumentOutputRepository.Publish(pending, target);
+        return new SavedCopy(target, valid.Bytes, valid.Digest);
+    }
 }

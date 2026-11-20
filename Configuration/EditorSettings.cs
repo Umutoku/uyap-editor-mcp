@@ -26,16 +26,16 @@ internal sealed class EditorSettings
         BackupRoot = backupRoot == null ? null : LocalFilePaths.ResolveDirectory(backupRoot);
         Classes = Path.Combine(AppContext.BaseDirectory, "java", "classes");
         if (!File.Exists(Path.Combine(Classes, "EditorLauncher.class")))
-            throw new EditorFailure(EditorErrors.LauncherMissing);
+            throw new EditorException(EditorErrors.LauncherMissing);
         if (!File.Exists(JavaExe) || !File.Exists(BridgeDll))
-            throw new EditorFailure(EditorErrors.JavaMissing);
+            throw new EditorException(EditorErrors.JavaMissing);
 
         foreach (var (name, hash) in Package)
         {
             var path = Path.Combine(EditorDir, name);
             LocalFilePaths.RequireExistingPlainPath(path);
             if (LocalFilePaths.Sha256(path) != hash)
-                throw new EditorFailure(EditorErrors.UnsupportedEditor, name, Version);
+                throw new EditorException(EditorErrors.UnsupportedEditor, name, Version);
         }
     }
 

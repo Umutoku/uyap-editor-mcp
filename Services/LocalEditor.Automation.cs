@@ -39,9 +39,9 @@ internal sealed partial class LocalEditor
         bool takesText = action is EditorActionIds.DefaultTyped or EditorActionIds.InsertContent or EditorActionIds.EditHeaderFooter;
         if (takesText ? text == null || text.Length > 8192 || text.Contains('\0') ||
                 (text.Length == 0 && action != EditorActionIds.EditHeaderFooter) : text != null)
-            throw new EditorFailure(EditorErrors.ActionTextInvalid);
+            throw new EditorException(EditorErrors.ActionTextInvalid);
         if (action == EditorActionIds.DefaultTyped && (text!.EnumerateRunes().Count() != 1 || char.IsControl(text[0])))
-            throw new EditorFailure(EditorErrors.TypedCharacterInvalid);
+            throw new EditorException(EditorErrors.TypedCharacterInvalid);
         var result = await session.Editor.Call(EditorBridgeCommands.Action, token, action, text ?? "");
         return new ActionResult(action, ReadNumber(result[0]), ReadNumber(result[1]), result.ElementAtOrDefault(2));
     }, token);
@@ -52,7 +52,7 @@ internal sealed partial class LocalEditor
         var session = Get(id);
         RequireEditable(session);
         if (actions.Length is < 1 or > 8)
-            throw new EditorFailure(EditorErrors.MacroStepsInvalid);
+            throw new EditorException(EditorErrors.MacroStepsInvalid);
         string[] arguments = [WriteNumber(recordStart), WriteNumber(recordEnd), WriteNumber(replayStart),
             WriteNumber(replayEnd), .. actions];
         var result = await session.Editor.Call(EditorBridgeCommands.Macro, token, arguments);
@@ -74,10 +74,10 @@ internal sealed partial class LocalEditor
         CancellationToken token) => Exclusive(async () =>
     {
         if (value.Length > 8192)
-            throw new EditorFailure(EditorErrors.TextLimit);
+            throw new EditorException(EditorErrors.TextLimit);
         var session = Get(id);
         if (!session.Editable && operation != "cancel")
-            throw new EditorFailure(EditorErrors.ReadOnlyForm);
+            throw new EditorException(EditorErrors.ReadOnlyForm);
         return ParseDialog(await session.Editor.Call(EditorBridgeCommands.FormInput, token, revision, WriteNumber(control), operation, value));
     }, token);
 
@@ -93,7 +93,7 @@ internal sealed partial class LocalEditor
     internal Task<ActionsResult> Actions(string id, int offset, int limit, CancellationToken token) => Exclusive(async () =>
     {
         if (offset < 0 || limit is < 1 or > 100)
-            throw new EditorFailure(EditorErrors.RangeInvalid);
+            throw new EditorException(EditorErrors.RangeInvalid);
         var session = Get(id);
         var actions = await session.Editor.Call(EditorBridgeCommands.Actions, token);
         var sorted = actions.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
@@ -104,13 +104,13 @@ internal sealed partial class LocalEditor
         Exclusive(async () =>
         {
             if (scope is not ("menus" or "actions"))
-                throw new EditorFailure(EditorErrors.InventoryScopeInvalid);
+                throw new EditorException(EditorErrors.InventoryScopeInvalid);
             if (offset < 0 || limit is < 1 or > 100)
-                throw new EditorFailure(EditorErrors.RangeInvalid);
+                throw new EditorException(EditorErrors.RangeInvalid);
             var session = Get(id);
             var values = await session.Editor.Call(EditorBridgeCommands.Catalog, token, scope);
             if (values.Length % 5 != 0)
-                throw new EditorFailure(EditorErrors.MenuCatalogResponseInvalid);
+                throw new EditorException(EditorErrors.MenuCatalogResponseInvalid);
             var entries = values.Chunk(5).Select(row => new CatalogEntry(
                 row[0].Split('\u001f', StringSplitOptions.RemoveEmptyEntries), row[1], row[2],
                 row[3].Length == 0 ? null : row[3], row[4]));
@@ -157,7 +157,7 @@ internal sealed partial class LocalEditor
             EditorWorkflowIds.Update => (EditorMenuLabels.Tools, "Editorü Güncelle"),
             EditorWorkflowIds.Proxy => (EditorMenuLabels.Tools, "Proxy"),
             EditorWorkflowIds.Help => (EditorMenuLabels.View, "Yardım Özelliklerini Aç"),
-            _ => throw new EditorFailure(EditorErrors.WorkflowUnknown),
+            _ => throw new EditorException(EditorErrors.WorkflowUnknown),
         };
         var ribbon = await Ribbon(id, tab, token);
         var enabled = ribbon.Commands.Any(button => button.Enabled &&

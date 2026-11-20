@@ -25,7 +25,7 @@ internal static class WordDocConverter
     {
         token.ThrowIfCancellationRequested();
         var executable = Environment.ProcessPath
-            ?? throw new EditorFailure(EditorErrors.DocWorkerMissing);
+            ?? throw new EditorException(EditorErrors.DocWorkerMissing);
         var start = new ProcessStartInfo(executable)
         {
             UseShellExecute = false,
@@ -38,7 +38,7 @@ internal static class WordDocConverter
         start.ArgumentList.Add(input);
         start.ArgumentList.Add(output);
         using var worker = Process.Start(start)
-            ?? throw new EditorFailure(EditorErrors.DocWorkerStartFailed);
+            ?? throw new EditorException(EditorErrors.DocWorkerStartFailed);
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
         timeout.CancelAfter(TimeSpan.FromSeconds(35));
         try
@@ -51,23 +51,26 @@ internal static class WordDocConverter
             {
                 worker.Kill();
             }
-            catch (InvalidOperationException) { }
+            catch (InvalidOperationException)
+            {
+                // The worker may have already exited between cancellation and cleanup.
+            }
             if (token.IsCancellationRequested)
                 throw;
-            throw new EditorFailure(EditorErrors.DocWordTimeout);
+            throw new EditorException(EditorErrors.DocWordTimeout);
         }
         switch (worker.ExitCode)
         {
             case 0:
                 return;
             case RuntimeUnavailable:
-                throw new EditorFailure(EditorErrors.DocWordRuntimeUnavailable);
+                throw new EditorException(EditorErrors.DocWordRuntimeUnavailable);
             case SharedWordInstance:
-                throw new EditorFailure(EditorErrors.DocWordInstanceBusy);
+                throw new EditorException(EditorErrors.DocWordInstanceBusy);
             case UnsafeDocument:
-                throw new EditorFailure(EditorErrors.DocWordDynamicContentUnsupported);
+                throw new EditorException(EditorErrors.DocWordDynamicContentUnsupported);
             default:
-                throw new EditorFailure(EditorErrors.DocWordConversionUnverified);
+                throw new EditorException(EditorErrors.DocWordConversionUnverified);
         }
     }
 
@@ -89,9 +92,7 @@ internal static class WordDocConverter
         int? originalSecurity = null;
         try
         {
-            if (!IsStage(input, FileExtensions.Rtf) || !IsStage(output, FileExtensions.Doc) || !File.Exists(input) ||
-                Path.Exists(output) || !string.Equals(Path.GetDirectoryName(input), Path.GetDirectoryName(output),
-                    StringComparison.OrdinalIgnoreCase))
+            if (!AreWorkerPathsValid(input, output))
                 return ConversionUnverified;
             LocalFilePaths.RequireExistingPlainPath(input);
             if (HasActiveRtfControls(input))
@@ -111,22 +112,13 @@ internal static class WordDocConverter
             word.AutomationSecurity = DisableMacros;
 
             string expected = ConvertOpenDocument(documents, input, output);
-            dynamic reopened = OpenReadOnly(documents, output);
-            try
-            {
-                return (int)reopened.SaveFormat == WordBinaryFormat && ReadText(reopened) == expected
-                    ? 0 : ConversionUnverified;
-            }
-            finally
-            {
-                CloseDocument(reopened);
-            }
+            return VerifyConvertedDocument(documents, output, expected);
         }
         catch (COMException e) when (word == null && e.HResult == unchecked((int)0x80040154))
         {
             return RuntimeUnavailable;
         }
-        catch (Exception e) when (e is COMException or RuntimeBinderException or IOException or UnauthorizedAccessException or EditorFailure)
+        catch (Exception e) when (e is COMException or RuntimeBinderException or IOException or UnauthorizedAccessException or EditorException)
         {
             Console.Error.WriteLine($"DOC Word worker failed ({e.GetType().Name}, 0x{e.HResult:X8}).");
             return ConversionUnverified;
@@ -141,6 +133,25 @@ internal static class WordDocConverter
             }
             Release(documents);
             Release(word);
+        }
+    }
+
+    private static bool AreWorkerPathsValid(string input, string output) =>
+        IsStage(input, FileExtensions.Rtf) && IsStage(output, FileExtensions.Doc) &&
+        File.Exists(input) && !Path.Exists(output) &&
+        string.Equals(Path.GetDirectoryName(input), Path.GetDirectoryName(output), StringComparison.OrdinalIgnoreCase);
+
+    private static int VerifyConvertedDocument(dynamic documents, string output, string expected)
+    {
+        dynamic reopened = OpenReadOnly(documents, output);
+        try
+        {
+            var matches = (int)reopened.SaveFormat == WordBinaryFormat && ReadText(reopened) == expected;
+            return matches ? 0 : ConversionUnverified;
+        }
+        finally
+        {
+            CloseDocument(reopened);
         }
     }
 
@@ -222,8 +233,10 @@ internal static class WordDocConverter
         {
             operation();
         }
-        catch (COMException) { }
-        catch (RuntimeBinderException) { }
+        catch (Exception error) when (error is COMException or RuntimeBinderException)
+        {
+            // Release COM references even if the application has already closed.
+        }
     }
 
     private static void Release(object? value)

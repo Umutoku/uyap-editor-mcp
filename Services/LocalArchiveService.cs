@@ -25,7 +25,7 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
                 Stream.Null, EditorLimits.ArchiveListingBytes, token);
             var entry = await InspectEncryptedArchive(pending, password, token);
             if (entry.Name != expectedName || entry.Size != original.Length)
-                throw new EditorFailure(EditorErrors.ArchiveContentsUnverified);
+                throw new EditorException(EditorErrors.ArchiveContentsUnverified);
             await RunSevenZip(["t", "-t7z", "--", pending], password, Stream.Null, EditorLimits.ArchiveListingBytes, token);
             return PublishArchive(pending, target, DocumentFormats.SevenZip, token);
         }
@@ -51,7 +51,7 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
                 await RunSevenZip(["x", "-t7z", "-so", "-bso0", "-spd", "--", source], password,
                     staged, entry.Size, token);
                 if (staged.Length != entry.Size)
-                    throw new EditorFailure(EditorErrors.ArchiveExtractedSizeMismatch);
+                    throw new EditorException(EditorErrors.ArchiveExtractedSizeMismatch);
                 staged.Position = 0;
                 ValidateArchiveUdf(staged);
             }
@@ -72,12 +72,12 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
         }
         catch (DecoderFallbackException)
         {
-            throw new EditorFailure(EditorErrors.ArchivePasswordEncodingInvalid);
+            throw new EditorException(EditorErrors.ArchivePasswordEncodingInvalid);
         }
         if (password.EndsWith('\n'))
             password = password.EndsWith("\r\n", StringComparison.Ordinal) ? password[..^2] : password[..^1];
         if (password.Length is < 1 or > 128 || password.Any(char.IsControl))
-            throw new EditorFailure(EditorErrors.ArchivePasswordInvalid);
+            throw new EditorException(EditorErrors.ArchivePasswordInvalid);
         return password;
     }
 
@@ -93,7 +93,7 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
             sizes is not [var sizeText] || !long.TryParse(sizeText, NumberStyles.None, CultureInfo.InvariantCulture, out var size) ||
             size is <= 0 or > EditorLimits.DocumentBytes || !lines.Contains("Encrypted = +") ||
             !lines.Any(line => line.StartsWith("Method = ", StringComparison.Ordinal) && line.Contains("7zAES", StringComparison.Ordinal)))
-            throw new EditorFailure(EditorErrors.ArchiveContentUnsupported);
+            throw new EditorException(EditorErrors.ArchiveContentUnsupported);
         return (name, size);
     }
 
@@ -110,8 +110,11 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
                     return;
             }
         }
-        catch (InvalidDataException) { }
-        throw new EditorFailure(EditorErrors.ArchiveUdfInvalid);
+        catch (InvalidDataException)
+        {
+            throw new EditorException(EditorErrors.ArchiveUdfInvalid);
+        }
+        throw new EditorException(EditorErrors.ArchiveUdfInvalid);
     }
 
     private static LocalArchiveResult PublishArchive(string pending, string target, string format, CancellationToken token)
@@ -125,12 +128,7 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
 
     private static async Task RunSevenZip(string[] arguments, string password, Stream output, long outputLimit, CancellationToken token)
     {
-        var executable = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "7-Zip", "7z.exe");
-        if (!File.Exists(executable))
-            throw new EditorFailure(EditorErrors.SevenZipMissing);
-        LocalFilePaths.RequireExistingPlainPath(executable);
-
-        var start = new ProcessStartInfo(executable)
+        var start = new ProcessStartInfo(SevenZipInstallation.ResolveExecutable())
         {
             UseShellExecute = false,
             CreateNoWindow = true,
@@ -144,7 +142,7 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
             start.ArgumentList.Add(option);
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
         timeout.CancelAfter(TimeSpan.FromSeconds(90));
-        using var process = Process.Start(start) ?? throw new EditorFailure(EditorErrors.SevenZipStartFailed);
+        using var process = Process.Start(start) ?? throw new EditorException(EditorErrors.SevenZipStartFailed);
         var errorDrain = process.StandardError.BaseStream.CopyToAsync(Stream.Null, timeout.Token);
         try
         {
@@ -158,17 +156,17 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
             {
                 length += count;
                 if (length > outputLimit)
-                    throw new EditorFailure(EditorErrors.ArchiveOutputLimit);
+                    throw new EditorException(EditorErrors.ArchiveOutputLimit);
                 await output.WriteAsync(buffer.AsMemory(0, count), timeout.Token);
             }
             await process.WaitForExitAsync(timeout.Token);
             await errorDrain;
             if (process.ExitCode != 0)
-                throw new EditorFailure(EditorErrors.SevenZipFailed);
+                throw new EditorException(EditorErrors.SevenZipFailed);
         }
         catch (OperationCanceledException) when (!token.IsCancellationRequested)
         {
-            throw new EditorFailure(EditorErrors.SevenZipTimeout);
+            throw new EditorException(EditorErrors.SevenZipTimeout);
         }
         finally
         {
@@ -181,8 +179,10 @@ internal sealed class LocalArchiveService(LocalDocumentRepository documents)
             {
                 await errorDrain;
             }
-            catch (OperationCanceledException) { }
-            catch (IOException) { }
+            catch (Exception error) when (error is OperationCanceledException or IOException)
+            {
+                // Preserve the original archive error when cancellation or process shutdown interrupts the drain.
+            }
         }
     }
 }

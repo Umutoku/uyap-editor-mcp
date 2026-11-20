@@ -7,5 +7,6 @@ The Windows release includes runtime dependencies from these NuGet packages.
 | Microsoft.Extensions and System.Diagnostics runtime libraries | [MIT](dotnet-runtime-MIT.txt) · [Third-party notices](dotnet-third-party-notices.txt) |
 | ModelContextProtocol and ModelContextProtocol.Core | [Apache 2.0](Apache-2.0.txt) |
 | PdfPig | [Apache 2.0](Apache-2.0.txt) · [Upstream](https://github.com/UglyToad/PdfPig) |
+| Microsoft .NET 10.0.15 Windows runtime | [MIT](dotnet-runtime-MIT.txt) · [Runtime notices](microsoft-dotnet-runtime-10.0.15-notices.txt) |
 
 The release uses separately installed UYAP Editor, Java and optionally 7-Zip. Refer to the respective vendor terms for those installations.

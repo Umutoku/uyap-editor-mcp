@@ -10,9 +10,9 @@ internal sealed partial class LocalEditor
         var session = Get(id);
         if (session.TemplateMode || !Path.GetExtension(session.Staged).Equals(FileExtensions.Udf, StringComparison.OrdinalIgnoreCase) ||
             !File.Exists(session.Staged))
-            throw new EditorFailure(EditorErrors.SignedUdfRequired);
+            throw new EditorException(EditorErrors.SignedUdfRequired);
         if (await session.Editor.HasSourceChanges(EditorErrors.SignedUdfChanged, token))
-            throw new EditorFailure(EditorErrors.SignedUdfChanged);
+            throw new EditorException(EditorErrors.SignedUdfChanged);
 
         var target = documents.Output(output, FileExtensions.Imz);
         ReadOnlyMemory<byte> expected;
@@ -20,7 +20,7 @@ internal sealed partial class LocalEditor
         {
             var entries = archive.Entries.Where(entry => entry.FullName == UdfEntries.Signature).ToArray();
             if (entries.Length != 1 || entries[0].Length is <= 0 or > EditorLimits.DocumentBytes)
-                throw new EditorFailure(EditorErrors.SignatureEntryRequired);
+                throw new EditorException(EditorErrors.SignatureEntryRequired);
             using var input = entries[0].Open();
             var signature = new byte[(int)entries[0].Length];
             await input.ReadExactlyAsync(signature, token);
@@ -40,7 +40,7 @@ internal sealed partial class LocalEditor
             }
             catch (AsnContentException)
             {
-                throw new EditorFailure(EditorErrors.UdfSignatureFormatInvalid);
+                throw new EditorException(EditorErrors.UdfSignatureFormatInvalid);
             }
         }
 
@@ -48,7 +48,7 @@ internal sealed partial class LocalEditor
         try
         {
             if (await session.Editor.Call(EditorBridgeCommands.SignedImz, token, pending) is not [EditorExportCommands.SignedImz])
-                throw new EditorFailure(EditorErrors.SignedExportCommandMissing);
+                throw new EditorException(EditorErrors.SignedExportCommandMissing);
             var result = await DocumentOutputRepository.ValidateOutput(pending, stream =>
             {
                 if (stream.Length != expected.Length)
@@ -60,7 +60,7 @@ internal sealed partial class LocalEditor
                 return true;
             }, token);
             if (!OriginalUnchanged(session))
-                throw new EditorFailure(EditorErrors.SourceChanged);
+                throw new EditorException(EditorErrors.SourceChanged);
             token.ThrowIfCancellationRequested();
             DocumentOutputRepository.Publish(pending, target);
             return new SignedImzExport(target, result.Bytes, result.Digest, EditorExportCommands.SignedImz, true);
@@ -122,20 +122,20 @@ internal sealed partial class LocalEditor
     {
         var mode = request.LibraryMode;
         if (mode is not null and not ("automatic" or "choose_provider"))
-            throw new EditorFailure(EditorErrors.LibraryModeInvalid);
+            throw new EditorException(EditorErrors.LibraryModeInvalid);
         var configured = await Exclusive(async () =>
         {
             var session = Get(request.Documents[0].DocumentId);
             // Open the existing cancel-only, local form and close this same revision under one gate.
             var form = ParseDialog(await session.Editor.Call(EditorBridgeCommands.OpenForm, token, EditorActionIds.SelectSigningLibrary));
             if (form.State != "open" || form.Revision == null)
-                throw new EditorFailure(EditorErrors.SigningLibraryUnverified);
+                throw new EditorException(EditorErrors.SigningLibraryUnverified);
             try
             {
                 var label = form.Controls.FirstOrDefault(control =>
                     control.Role == "message" && control.Value.Contains("Kütüphaneniz", StringComparison.Ordinal));
                 if (label == null)
-                    throw new EditorFailure(EditorErrors.SigningLibraryModeMissing);
+                    throw new EditorException(EditorErrors.SigningLibraryModeMissing);
                 return label.Value.Contains("Otomatik", StringComparison.OrdinalIgnoreCase)
                     ? "Otomatik" : "Özel sağlayıcı";
             }
@@ -144,7 +144,7 @@ internal sealed partial class LocalEditor
                 var closed = ParseDialog(await session.Editor.Call(EditorBridgeCommands.FormInput, CancellationToken.None,
                     form.Revision, "-1", "cancel", ""));
                 if (closed.State != "closed")
-                    throw new EditorFailure(EditorErrors.SigningLibraryCloseUnverified);
+                    throw new EditorException(EditorErrors.SigningLibraryCloseUnverified);
             }
         }, token);
         var details = new List<ApprovalItem> { new("Mevcut seçim", configured) };
@@ -175,7 +175,7 @@ internal sealed partial class LocalEditor
 
         var targets = request.Documents.Select(document => documents.Output(document.OutputPath!, FileExtensions.Udf)).ToArray();
         if (targets.Distinct(StringComparer.OrdinalIgnoreCase).Count() != targets.Length)
-            throw new EditorFailure(EditorErrors.SigningSelectionInvalid);
+            throw new EditorException(EditorErrors.SigningSelectionInvalid);
         var stages = targets.Select(target => DocumentOutputRepository.TemporaryOutput(target, FileExtensions.Udf)).ToArray();
         List<FormatExport> snapshots = [];
         try

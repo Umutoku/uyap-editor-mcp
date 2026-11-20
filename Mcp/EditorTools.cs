@@ -371,10 +371,10 @@ internal sealed class EditorTools(LocalEditor editor, LocalArchiveService archiv
         {
             return await action();
         }
-        catch (EditorFailure error) { throw ToMcpError(error); }
-        catch (UnauthorizedAccessException) { throw ToMcpError(new EditorFailure(EditorErrors.AccessDenied)); }
-        catch (IOException) { throw ToMcpError(new EditorFailure(EditorErrors.LocalIoError)); }
+        catch (EditorException error) { throw ToMcpError(error); }
+        catch (UnauthorizedAccessException) { throw ToMcpError(new EditorException(EditorErrors.AccessDenied)); }
+        catch (IOException) { throw ToMcpError(new EditorException(EditorErrors.LocalIoError)); }
     }
 
-    private static McpException ToMcpError(EditorFailure error) => new($"{error.Code}: {error.Message}");
+    private static McpException ToMcpError(EditorException error) => new($"{error.Code}: {error.Message}");
 }

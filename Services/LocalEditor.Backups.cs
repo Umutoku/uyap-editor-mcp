@@ -7,7 +7,7 @@ internal sealed partial class LocalEditor
     internal Task<NativeBackups> ListBackups(int offset, int limit, CancellationToken token) => Exclusive(() =>
     {
         if (offset < 0 || limit is < 1 or > 50)
-            throw new EditorFailure(EditorErrors.CatalogRangeInvalid);
+            throw new EditorException(EditorErrors.CatalogRangeInvalid);
         var paths = documents.BackupFolders()
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .SelectMany(folder => Directory.EnumerateFiles(folder, "*.udf"))
@@ -52,13 +52,13 @@ internal sealed partial class LocalEditor
             using (var input = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 if (input.Length is <= 0 or > EditorLimits.DocumentBytes)
-                    throw new EditorFailure(EditorErrors.BackupSizeInvalid);
+                    throw new EditorException(EditorErrors.BackupSizeInvalid);
                 using var copy = new FileStream(staged + FileExtensions.Pending, FileMode.CreateNew, FileAccess.Write, FileShare.None);
                 await input.CopyToAsync(copy, token);
             }
             var digest = LocalFilePaths.Sha256(staged + FileExtensions.Pending);
             if (!string.Equals(digest, expectedSha256, StringComparison.OrdinalIgnoreCase))
-                throw new EditorFailure(EditorErrors.BackupStale);
+                throw new EditorException(EditorErrors.BackupStale);
             try
             {
                 using var archive = ZipFile.OpenRead(staged + FileExtensions.Pending);
@@ -71,7 +71,7 @@ internal sealed partial class LocalEditor
             }
             catch (InvalidDataException)
             {
-                throw new EditorFailure(EditorErrors.BackupUdfInvalid);
+                throw new EditorException(EditorErrors.BackupUdfInvalid);
             }
 
             var blank = Path.Combine(profile, EditorProfilePaths.SettingsFolder, "isimsiz.UDF");
@@ -80,10 +80,10 @@ internal sealed partial class LocalEditor
             File.Move(staged + FileExtensions.Pending, staged);
             var command = await editor.Call(EditorBridgeCommands.RestoreBackup, token, pending);
             if (command is not [var editorCommand])
-                throw new EditorFailure(EditorErrors.BackupRecoveryResponseInvalid);
+                throw new EditorException(EditorErrors.BackupRecoveryResponseInvalid);
             var result = await DocumentOutputRepository.ValidateOutput(pending, _ => true, token);
             if (!string.Equals(result.Digest, digest, StringComparison.Ordinal))
-                throw new EditorFailure(EditorErrors.BackupOutputMismatch);
+                throw new EditorException(EditorErrors.BackupOutputMismatch);
             token.ThrowIfCancellationRequested();
             DocumentOutputRepository.Publish(pending, target);
             return new BackupRecovery(new SavedCopy(target, result.Bytes, result.Digest), editorCommand);

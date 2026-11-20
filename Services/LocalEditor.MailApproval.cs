@@ -11,7 +11,7 @@ internal sealed partial class LocalEditor
     {
         var format = AttachmentFormat(request.Action);
         if (request.Documents is not [var document])
-            throw new EditorFailure(EditorErrors.MailApprovalDocumentsInvalid);
+            throw new EditorException(EditorErrors.MailApprovalDocumentsInvalid);
 
         string userStep = ApprovalText.MailApprovalStep;
         var missing = new List<string>();
@@ -32,9 +32,9 @@ internal sealed partial class LocalEditor
         string subject = request.Subject!;
         string message = request.Message!;
         if (subject.Length > 512 || subject.Any(char.IsControl))
-            throw new EditorFailure(EditorErrors.MailSubjectInvalid);
+            throw new EditorException(EditorErrors.MailSubjectInvalid);
         if (message.Length > 16_384 || message.Any(value => char.IsControl(value) && value is not ('\t' or '\r' or '\n')))
-            throw new EditorFailure(EditorErrors.MailMessageInvalid);
+            throw new EditorException(EditorErrors.MailMessageInvalid);
 
         var attachmentTarget = documents.Output(document.OutputPath!, "." + format);
         var draftTarget = documents.Output(request.DraftPath!, FileExtensions.Eml);
@@ -58,9 +58,9 @@ internal sealed partial class LocalEditor
             {
                 DocumentOutputRepository.Publish(stagedDraft, draftTarget);
             }
-            catch (Exception error) when (error is EditorFailure or IOException or UnauthorizedAccessException)
+            catch (Exception error) when (error is EditorException or IOException or UnauthorizedAccessException)
             {
-                throw new EditorFailure(EditorErrors.MailDraftPublishFailed, attachmentTarget);
+                throw new EditorException(EditorErrors.MailDraftPublishFailed, attachmentTarget);
             }
 
             return new ApprovalReview(request.Action, EditorWorkflowStatuses.AwaitingUserConfirmation, null,
@@ -80,7 +80,7 @@ internal sealed partial class LocalEditor
     private static string[] ValidateMailRecipients(string[] recipients)
     {
         if (recipients.Length > 20 || recipients.Any(address => !IsPlainMailAddress(address)))
-            throw new EditorFailure(EditorErrors.MailRecipientInvalid);
+            throw new EditorException(EditorErrors.MailRecipientInvalid);
         return recipients;
     }
 
@@ -105,7 +105,7 @@ internal sealed partial class LocalEditor
         using var source = new FileStream(attachmentPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         if (source.Length != attachment.Bytes ||
             !string.Equals(Convert.ToHexString(SHA256.HashData(source)), attachment.Sha256, StringComparison.Ordinal))
-            throw new EditorFailure(EditorErrors.MailAttachmentChanged);
+            throw new EditorException(EditorErrors.MailAttachmentChanged);
         source.Position = 0;
         string boundary = "uyap-" + Guid.NewGuid().ToString("N");
         using var output = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None);

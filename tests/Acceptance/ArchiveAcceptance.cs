@@ -20,6 +20,10 @@ internal static class ArchiveAcceptance
         await client.Call(McpToolNames.Extract7z, ("archivePath", archive), ("outputPath", restored),
             ("passwordFile", password));
         Require(File.ReadAllBytes(source).AsSpan().SequenceEqual(File.ReadAllBytes(restored)), "7z changed the UDF.");
+        await client.ExpectError(McpToolNames.Extract7z, "OUTPUT_EXISTS", ("archivePath", archive),
+            ("outputPath", restored), ("passwordFile", password));
+        Require(File.ReadAllBytes(source).AsSpan().SequenceEqual(File.ReadAllBytes(restored)),
+            "The second extraction changed the existing output.");
         var opened = await client.Call(McpToolNames.Open, ("path", restored));
         var id = opened.GetProperty("documentId").GetString();
         var page = await client.Call(McpToolNames.GoToPage, ("documentId", id), ("page", 3));

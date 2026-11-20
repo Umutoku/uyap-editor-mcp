@@ -5,7 +5,7 @@ using UyapEditorMcp;
 
 if (!OperatingSystem.IsWindows() || !Environment.Is64BitProcess)
 {
-    Console.Error.WriteLine("UyapEditorMcp requires a Windows x64 interactive session.");
+    await Console.Error.WriteLineAsync("UyapEditorMcp requires a Windows x64 interactive session.");
     return 1;
 }
 
@@ -19,7 +19,7 @@ try
     builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace);
     builder.Logging.SetMinimumLevel(LogLevel.Warning);
     string Arg(string name) => builder.Configuration[name]
-        ?? throw new EditorFailure(EditorErrors.ConfigMissing, name);
+        ?? throw new EditorException(EditorErrors.ConfigMissing, name);
 
     var settings = new EditorSettings(Arg("editor-dir"), Arg("java-bin"), Arg("input-root"),
         Arg("output-root"), Arg("state-dir"), builder.Configuration["backup-root"]);
@@ -37,8 +37,8 @@ try
     await host.RunAsync();
     return 0;
 }
-catch (EditorFailure e)
+catch (EditorException e)
 {
-    Console.Error.WriteLine($"{e.Code}: {e.Message}");
+    await Console.Error.WriteLineAsync($"{e.Code}: {e.Message}");
     return 1;
 }

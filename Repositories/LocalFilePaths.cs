@@ -15,7 +15,7 @@ internal static class LocalFilePaths
         var full = Resolve(path);
         RequireExistingPlainPath(full);
         if (!Directory.Exists(full))
-            throw new EditorFailure(EditorErrors.DirectoryMissing);
+            throw new EditorException(EditorErrors.DirectoryMissing);
         return full;
     }
 
@@ -23,11 +23,11 @@ internal static class LocalFilePaths
     {
         if (path.Length < 3 || !char.IsAsciiLetter(path[0]) || path[1] != ':' ||
             (path[2] != '\\' && path[2] != '/') || path.AsSpan(2).Contains(':') || path.Contains('\0'))
-            throw new EditorFailure(EditorErrors.PathNotLocal);
+            throw new EditorException(EditorErrors.PathNotLocal);
 
         var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
         if (new DriveInfo(Path.GetPathRoot(full)!).DriveType != DriveType.Fixed)
-            throw new EditorFailure(EditorErrors.PathNotOnFixedDrive);
+            throw new EditorException(EditorErrors.PathNotOnFixedDrive);
         return full;
     }
 
@@ -36,9 +36,9 @@ internal static class LocalFilePaths
         for (string? segment = path; segment != null; segment = Path.GetDirectoryName(segment))
         {
             if (!Path.Exists(segment))
-                throw new EditorFailure(EditorErrors.PathMissing);
+                throw new EditorException(EditorErrors.PathMissing);
             if ((File.GetAttributes(segment) & FileAttributes.ReparsePoint) != 0)
-                throw new EditorFailure(EditorErrors.PathRedirected);
+                throw new EditorException(EditorErrors.PathRedirected);
         }
     }
 }

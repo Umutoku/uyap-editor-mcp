@@ -57,7 +57,7 @@ internal sealed partial class LocalEditor
             var session = Get(id);
             RequireEditable(session);
             if (text.Length > 8192)
-                throw new EditorFailure(EditorErrors.TextLimit);
+                throw new EditorException(EditorErrors.TextLimit);
             var result = await session.Editor.Call(EditorBridgeCommands.Replace, token, WriteNumber(start), WriteNumber(end), text);
             return new EditResult(ReadNumber(result[0]));
         }, token);
@@ -67,7 +67,7 @@ internal sealed partial class LocalEditor
         {
             var values = await Get(id).Editor.Call(EditorBridgeCommands.ListComments, token, WriteNumber(offset), WriteNumber(limit));
             if (values.Length == 0 || (values.Length - 1) % 5 != 0)
-                throw new EditorFailure(EditorErrors.CommentListResponseInvalid);
+                throw new EditorException(EditorErrors.CommentListResponseInvalid);
             return new CommentsResult(ReadNumber(values[0]), offset,
                 values.Skip(1).Chunk(5).Select(ReadComment).ToArray());
         }, token);
@@ -80,14 +80,7 @@ internal sealed partial class LocalEditor
     {
         var session = Get(id);
         RequireEditable(session);
-        if (kind is not ("plain" or "rich" or "shortcut"))
-            throw new EditorFailure(EditorErrors.AutoTextKindInvalid);
-        if (operation is not ("set" or "delete"))
-            throw new EditorFailure(EditorErrors.AutoTextOperationInvalid);
-        var plain = kind == "plain" && operation == "set";
-        var rich = kind is ("rich" or "shortcut") && operation == "set";
-        if (plain != (text != null) || rich != (richSourcePath != null) || text?.Length > 8192)
-            throw new EditorFailure(EditorErrors.AutoTextValueInvalid);
+        ValidateAutomaticText(kind, operation, text, richSourcePath);
         string? staged = null;
         try
         {
@@ -109,6 +102,19 @@ internal sealed partial class LocalEditor
         }
     }, token);
 
+    private static void ValidateAutomaticText(string kind, string operation, string? text, string? richSourcePath)
+    {
+        if (kind is not ("plain" or "rich" or "shortcut"))
+            throw new EditorException(EditorErrors.AutoTextKindInvalid);
+        if (operation is not ("set" or "delete"))
+            throw new EditorException(EditorErrors.AutoTextOperationInvalid);
+
+        var plain = kind == "plain" && operation == "set";
+        var rich = kind is ("rich" or "shortcut") && operation == "set";
+        if (plain != (text != null) || rich != (richSourcePath != null) || text?.Length > 8192)
+            throw new EditorException(EditorErrors.AutoTextValueInvalid);
+    }
+
     internal Task<AutomaticTextInsertion> InsertAutomaticText(string id, string key, string kind,
         CancellationToken token) => Exclusive(async () =>
     {
@@ -121,7 +127,7 @@ internal sealed partial class LocalEditor
     private static AutomaticTexts ParseAutomaticText(string[] response)
     {
         if (response.Length % 3 != 0)
-            throw new EditorFailure(EditorErrors.AutomaticTextResponseInvalid);
+            throw new EditorException(EditorErrors.AutomaticTextResponseInvalid);
         return new AutomaticTexts(response.Chunk(3).Select(row => new AutomaticTextEntry(row[0], row[1], row[2])).ToArray());
     }
 
@@ -156,7 +162,7 @@ internal sealed partial class LocalEditor
     private static EditorComment ReadComment(string[] values)
     {
         if (values.Length != 5)
-            throw new EditorFailure(EditorErrors.CommentResponseInvalid);
+            throw new EditorException(EditorErrors.CommentResponseInvalid);
         return new EditorComment(ReadNumber(values[0]), ReadNumber(values[1]), ReadNumber(values[2]),
             ReadNumber(values[3]), values[4]);
     }

@@ -18,7 +18,7 @@ internal sealed partial class LocalEditor
         var returned = ParsePage(await session.Editor.Call(EditorBridgeCommands.Go, token, WriteNumber(page)));
         var seen = await bridge.Page(session.Editor.Pid, token);
         if (seen != null && (seen.Page != returned.Page || seen.PageCount != returned.PageCount))
-            throw new EditorFailure(EditorErrors.PagePositionUnverified);
+            throw new EditorException(EditorErrors.PagePositionUnverified);
         return seen ?? returned;
     }, token);
 
@@ -43,18 +43,18 @@ internal sealed partial class LocalEditor
         if (firstPage.HasValue || lastPage.HasValue)
             RequireEditable(session);
         if (region is not ("header" or "footer") || firstPage is < 1 || (lastPage is < 1 && lastPage != -1))
-            throw new EditorFailure(EditorErrors.PageRegionRangeInvalid);
+            throw new EditorException(EditorErrors.PageRegionRangeInvalid);
         var values = await session.Editor.Call(EditorBridgeCommands.PageRegionRange, token, region,
             firstPage.HasValue ? WriteNumber(firstPage.Value) : "", lastPage.HasValue ? WriteNumber(lastPage.Value) : "");
         if (values.Length != 3)
-            throw new EditorFailure(EditorErrors.PageRegionRangeResponseInvalid);
+            throw new EditorException(EditorErrors.PageRegionRangeResponseInvalid);
         return new PageRegionRange(values[0], ReadNumber(values[1]), values[2].Length == 0 ? null : ReadNumber(values[2]));
     }, token);
 
     private static PageRegion ReadPageRegion(string[] values)
     {
         if (values.Length != 5)
-            throw new EditorFailure(EditorErrors.PageRegionResponseInvalid);
+            throw new EditorException(EditorErrors.PageRegionResponseInvalid);
         return new PageRegion(values[0], values[1] == "true", ReadNumber(values[2]), ReadNumber(values[3]), values[4]);
     }
 
@@ -65,7 +65,7 @@ internal sealed partial class LocalEditor
         Exclusive(async () =>
         {
             if (zoomPercent == null && showWhitespace == null || zoomPercent is < 10 or > 825)
-                throw new EditorFailure(EditorErrors.ViewOptionsInvalid);
+                throw new EditorException(EditorErrors.ViewOptionsInvalid);
             var values = await Get(id).Editor.Call(EditorBridgeCommands.SetView, token,
                 zoomPercent.HasValue ? WriteNumber(zoomPercent.Value) : "",
                 showWhitespace.HasValue ? (showWhitespace.Value ? "true" : "false") : "");
@@ -81,7 +81,7 @@ internal sealed partial class LocalEditor
         Exclusive(async () =>
         {
             if (offset < 0 || limit is < 1 or > 100)
-                throw new EditorFailure(EditorErrors.RangeInvalid);
+                throw new EditorException(EditorErrors.RangeInvalid);
             var values = await Get(id).Editor.Call(EditorBridgeCommands.Shortcuts, token, WriteNumber(offset), WriteNumber(limit));
             return new EditorShortcutsResult(ReadNumber(values[0]), offset, values.Skip(1).Chunk(3)
                 .Select(fields => new EditorShortcut(fields[0], fields[1], fields[2])).ToArray());

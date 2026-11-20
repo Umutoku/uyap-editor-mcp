@@ -68,8 +68,16 @@ internal static class ApprovalAcceptance
                 subject = "Kurgu ek",
                 message = "Kurgu belge eki için yerel kabul.",
             });
-            Require(result.GetProperty("artifacts").GetArrayLength() == 2 &&
-                File.ReadAllText(draft).Contains("X-Unsent: 1", StringComparison.Ordinal), "Mail draft was not prepared.");
+            CheckArtifacts(result, [attachment, draft]);
+            var mail = File.ReadAllText(draft);
+            Require(mail.StartsWith("X-Unsent: 1\r\nTo: test@example.invalid\r\n", StringComparison.Ordinal),
+                "Mail draft headers are incorrect.");
+            var lines = mail.Split("\r\n");
+            var encodedAttachment = lines.SkipWhile(line => !line.StartsWith("Content-Disposition: attachment", StringComparison.Ordinal))
+                .SkipWhile(line => line.Length != 0).Skip(1)
+                .TakeWhile(line => !line.StartsWith("--", StringComparison.Ordinal));
+            Require(Convert.FromBase64String(string.Concat(encodedAttachment)).AsSpan()
+                .SequenceEqual(File.ReadAllBytes(attachment)), $"The {format} draft contains different attachment bytes.");
         }
     }
 
@@ -80,7 +88,7 @@ internal static class ApprovalAcceptance
         {
             new { documentId = first, outputPath = Path.Combine(output, "single-print.pdf") },
         };
-        await Check(client, EditorActionIds.PrintDocument, EditorWorkflowStatuses.AwaitingUserConfirmation,
+        var single = await Check(client, EditorActionIds.PrintDocument, EditorWorkflowStatuses.AwaitingUserConfirmation,
             new
             {
                 documents,
@@ -88,12 +96,13 @@ internal static class ApprovalAcceptance
                 copies = 1,
                 pageRange = "all"
             });
+        CheckPrintArtifacts(single, documents.Select(document => document.outputPath).ToArray());
         documents =
         [
             new { documentId = first, outputPath = Path.Combine(output, "batch-print-first.pdf") },
             new { documentId = second, outputPath = Path.Combine(output, "batch-print-second.pdf") },
         ];
-        await Check(client, EditorActionIds.PrintBatch, EditorWorkflowStatuses.AwaitingUserConfirmation,
+        var batch = await Check(client, EditorActionIds.PrintBatch, EditorWorkflowStatuses.AwaitingUserConfirmation,
             new
             {
                 documents,
@@ -101,6 +110,35 @@ internal static class ApprovalAcceptance
                 copies = 1,
                 pageRange = "all"
             });
+        CheckPrintArtifacts(batch, documents.Select(document => document.outputPath).ToArray());
+    }
+
+    private static void CheckPrintArtifacts(JsonElement result, string[] paths)
+    {
+        CheckArtifacts(result, paths);
+        var details = result.GetProperty("details").EnumerateArray().ToArray();
+        for (int index = 0; index < paths.Length; index++)
+        {
+            var label = $"Belge {index + 1} sayfa sayısı";
+            Require(File.ReadAllBytes(paths[index]).AsSpan().StartsWith("%PDF-"u8) &&
+                details.Any(item => item.GetProperty("label").GetString() == label && item.GetProperty("value").GetString() == "3"),
+                "The print preview was not an expected three-page PDF.");
+        }
+    }
+
+    private static void CheckArtifacts(JsonElement result, string[] paths)
+    {
+        var artifacts = result.GetProperty("artifacts").EnumerateArray().ToArray();
+        Require(artifacts.Length == paths.Length, "The review returned an unexpected number of files.");
+        for (int index = 0; index < paths.Length; index++)
+        {
+            var bytes = File.ReadAllBytes(paths[index]);
+            var artifact = artifacts[index];
+            Require(artifact.GetProperty("path").GetString() == paths[index] &&
+                artifact.GetProperty("bytes").GetInt64() == bytes.Length &&
+                artifact.GetProperty("sha256").GetString() == Convert.ToHexString(SHA256.HashData(bytes)),
+                "The approval artifact did not match its published file.");
+        }
     }
 
     private static async Task CheckSecurity(AcceptanceClient client, string first, string second, string output)

@@ -16,5 +16,5 @@ if ($LASTEXITCODE -ne 0) { throw "javac exited with code $LASTEXITCODE" }
 
 $project = Join-Path $PSScriptRoot 'UyapEditorMcp.csproj'
 $destination = Join-Path $PSScriptRoot 'app'
-dotnet publish $project -c Release --artifacts-path $ArtifactsPath --disable-build-servers -o $destination
+dotnet publish $project -c Release -r win-x64 --self-contained true --artifacts-path $ArtifactsPath --disable-build-servers -o $destination
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish exited with code $LASTEXITCODE" }

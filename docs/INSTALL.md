@@ -1,6 +1,14 @@
 # Kurulum / Installation
 
-Sunucu için etkileşimli **Windows x64 masaüstü oturumu**, **UYAP Doküman Editörü 5.4.20**, Java Access Bridge içeren **Java 8 x64** ve **.NET 10 x64 Runtime** gerekir. 7z araçları için Program Files altında 7-Zip kurulu olmalıdır. UYAP JAR dosyalarının SHA-256 değerleri başlangıçta doğrulanır. Windows ARM emülasyonu ayrıca test edilmedi. [UYAP Editör](https://www.uyap.gov.tr/UYAP-Editor) · [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0) · [7-Zip](https://www.7-zip.org/)
+Sunucu için etkileşimli **Windows x64 masaüstü oturumu**, **UYAP Doküman Editörü 5.4.20** ve Java Access Bridge içeren **Java 8 x64** gerekir. 0.19 sürüm adayı .NET çalışma zamanını yanında taşır. GitHub Releases’teki eski 0.18.0 önizlemesi ayrıca .NET 10 x64 çalışma zamanı ister. 7z araçları için Program Files altında 7-Zip kurulu olmalıdır. UYAP JAR dosyalarının SHA-256 değerleri başlangıçta doğrulanır. [UYAP Editör](https://www.uyap.gov.tr/UYAP-Editor) · [7-Zip](https://www.7-zip.org/)
+
+| Bileşen | Doğrulanan uyumluluk |
+| --- | --- |
+| Editörü çalıştıran Java | Java 8 x64, güncelleme 503 ile UYAP 5.4.20 ve kurgu belge kabul testi geçti. Java güncelleme numarası kodda sabitlenmez. |
+| Java 21 x64 | JDK 21.0.8 ile Java Access Bridge dosyası bulundu. UYAP açılırken editörün XStream bağımlılığı `InaccessibleObjectException` verdi. Java 21.0.8, bu editör paketi için desteklenen çalışma ortamı değildir. |
+| Java başlatıcısını derleyen JDK | JDK 21.0.8 ile `--release 8` derlemesi doğrulandı. |
+| Son kullanıcı .NET çalışma zamanı | 0.19 Windows x64 sürüm adayı paket içindeki .NET 10.0.15 çalışma zamanını yükledi. Ayrı .NET kurulumu gerekmez. |
+| .NET kaynak derlemesi | Proje `net10.0-windows` hedefler. Derleme .NET 11 SDK 11.0.100 ile de geçti. |
 
 ## Windows PowerShell
 
@@ -69,10 +77,15 @@ gemini mcp list
 
 Yerel stdio alt süreci çalıştırabilen MCP istemcilerinde aynı yürütülebilir dosya ve argümanlar kullanılır. İstemci ve sunucu, UYAP'ın çalıştığı aynı etkileşimli Windows oturumunda bulunmalıdır. Uzak HTTP/SSE ve tarayıcıdan bağlanan bulut istemcileri için bu dağıtımda bir ağ uç noktası bulunmaz.
 
-## macOS
+## Kaynaktan derleme
 
-macOS'ta bir Windows x64 bilgisayara veya uygun bir Windows x64 sanal makinesine masaüstü bağlantısıyla gir. UYAP Editör, MCP ve tercih ettiğin istemciyi **Windows oturumunda** aç. Bağlantı kurulduktan sonra yukarıdaki PowerShell örneklerini Windows oturumunda uygula. Bu paket Windows Java Access Bridge kullandığı için macOS'ta Terminal'den doğrudan çalıştırılamaz. Apple Silicon üzerinde Windows ARM ve x64 emülasyonu doğrulanmadı.
+Visual Studio'da `UyapEditorMcp.sln` dosyasını aç. Derleme için .NET 10 SDK ve Java 8 hedefini destekleyen bir JDK gerekir. PowerShell örneğindeki dizinleri kurulumuna göre değiştir.
 
-Aynı yöntem, Linux bilgisayarda tam Windows x64 sanal makinesiyle kullanılabilir. macOS ve Linux istemcilerinden uzaktan stdio köprüleme bu sürümün kabul kapsamına girmedi.
+```powershell
+./Build.ps1 -EditorDirectory 'C:/UYAP/Editor' -JavaCompiler 'C:/Java/jdk17/bin/javac.exe'
+./Package.ps1
+```
+
+`Build.ps1`, `app/` altında Windows x64 ve çalışma zamanı dahil bir çıktı oluşturur. `Package.ps1`, `dist/` altında ZIP, MCPB, SHA-256 ve MCP Registry metadata dosyalarını üretir. [Microsoft .NET dağıtım biçimleri](https://learn.microsoft.com/en-us/dotnet/core/deploying/)
 
 İstemciye göre ayrı komut gösterme biçimi, [Microsoft Playwright MCP](https://github.com/microsoft/playwright-mcp) ve [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) kurulum rehberleriyle karşılaştırıldı.

@@ -20,7 +20,8 @@ internal static class DocumentOutputRepository
                 {
                     var result = parse(stream);
                     stream.Position = 0;
-                    var digest = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream));
+                    var hash = await System.Security.Cryptography.SHA256.HashDataAsync(stream, token);
+                    var digest = Convert.ToHexString(hash);
                     return (result, stream.Length, digest);
                 }
             }
@@ -30,7 +31,7 @@ internal static class DocumentOutputRepository
             }
             await Task.Delay(125, token);
         }
-        throw new EditorFailure(EditorErrors.OutputUnverified);
+        throw new EditorException(EditorErrors.OutputUnverified);
     }
 
     internal static bool ValidateFormat(Stream stream, string format)
@@ -45,8 +46,8 @@ internal static class DocumentOutputRepository
             DocumentFormats.Rtf => prefix.StartsWith("{\\rtf"u8),
             DocumentFormats.Html => prefix.StartsWith("<!DOCTYPE html"u8) || prefix.StartsWith("<html"u8),
             DocumentFormats.PostScript => prefix.StartsWith("%!PS-Adobe"u8) && EndsWith(stream, "%%EOF\n"u8),
-            DocumentFormats.Xsl => ValidateXml(stream, "root", "http://www.w3.org/1999/XSL/Format"),
-            DocumentFormats.Svg => ValidateXml(stream, DocumentFormats.Svg, "http://www.w3.org/2000/svg"),
+            DocumentFormats.Xsl => ValidateXml(stream, "root", DocumentXmlNamespaces.Xsl),
+            DocumentFormats.Svg => ValidateXml(stream, DocumentFormats.Svg, DocumentXmlNamespaces.Svg),
             DocumentFormats.Doc => stream.Length >= 512 &&
                 prefix.StartsWith(new byte[] { 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1 }),
             DocumentFormats.Bmp => read >= 6 && prefix.StartsWith("BM"u8) &&
@@ -123,6 +124,7 @@ internal static class DocumentOutputRepository
                 return false;
             while (reader.Read())
             {
+                // Read to EOF so malformed XML after the root is rejected.
             }
             return true;
         }
@@ -139,7 +141,7 @@ internal static class DocumentOutputRepository
         }
         catch (IOException) when (File.Exists(target) || Directory.Exists(target))
         {
-            throw new EditorFailure(EditorErrors.OutputExists);
+            throw new EditorException(EditorErrors.OutputExists);
         }
     }
 
@@ -154,7 +156,9 @@ internal static class DocumentOutputRepository
         {
             File.Delete(path);
         }
-        catch (IOException) { }
-        catch (UnauthorizedAccessException) { }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            // An editor process may still own the staging file during cleanup.
+        }
     }
 }

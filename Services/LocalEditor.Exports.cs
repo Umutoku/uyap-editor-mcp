@@ -61,7 +61,7 @@ internal sealed partial class LocalEditor
                 {
                     await snapshotEditor.Call(EditorBridgeCommands.Close, CancellationToken.None);
                 }
-                catch (EditorFailure)
+                catch (EditorException)
                 {
                     snapshotEditor.AbortStartup();
                 }
@@ -111,9 +111,9 @@ internal sealed partial class LocalEditor
         var session = Get(id);
         var format = Path.GetExtension(output).TrimStart('.').ToLowerInvariant();
         if (!Formats.Contains(format))
-            throw new EditorFailure(EditorErrors.FormatUnsupported);
+            throw new EditorException(EditorErrors.FormatUnsupported);
         if (htmlPageBreaks && format != DocumentFormats.Html)
-            throw new EditorFailure(EditorErrors.FormatOptionInvalid);
+            throw new EditorException(EditorErrors.FormatOptionInvalid);
         var target = documents.Output(output, "." + format);
         var nativeFormat = format == DocumentFormats.TiffShort ? DocumentFormats.Tiff : format;
         if (htmlPageBreaks)
@@ -142,7 +142,7 @@ internal sealed partial class LocalEditor
         {
             return await session.Editor.Call(EditorBridgeCommands.Export, token, pending, DocumentFormats.Doc);
         }
-        catch (EditorFailure error) when (!session.Editor.IsUncertain &&
+        catch (EditorException error) when (!session.Editor.IsUncertain &&
             error.Code is EditorErrorCodes.DocOfficeRuntimeUnavailable or EditorErrorCodes.SaveDialogTimeout)
         {
             // Word is an optional local compatibility path after UYAP's native Office preflight.
@@ -165,7 +165,7 @@ internal sealed partial class LocalEditor
     internal async Task<BatchResult> Batch(BatchFile[] files, CancellationToken token)
     {
         if (files.Length is < 1 or > 8)
-            throw new EditorFailure(EditorErrors.BatchSizeInvalid);
+            throw new EditorException(EditorErrors.BatchSizeInvalid);
         List<BatchItem> results = [];
         foreach (var file in files)
         {
@@ -182,7 +182,7 @@ internal sealed partial class LocalEditor
                     ? (await ExportPdf(id, file.OutputPath, token)).Path
                     : (await Export(id, file.OutputPath, token)).Path;
             }
-            catch (EditorFailure failed) { error = failed.Code; }
+            catch (EditorException failed) { error = failed.Code; }
             catch (Exception failed) when (failed is IOException or UnauthorizedAccessException) { error = EditorErrorCodes.LocalIoError; }
             finally
             {
@@ -193,7 +193,7 @@ internal sealed partial class LocalEditor
                         await Close(id, CancellationToken.None);
                         id = null;
                     }
-                    catch (EditorFailure failed) { error ??= failed.Code; }
+                    catch (EditorException failed) { error ??= failed.Code; }
                 }
             }
             results.Add(new BatchItem(name, published != null, published, error, id));
@@ -206,7 +206,7 @@ internal sealed partial class LocalEditor
     {
         var format = AttachmentFormat(action);
         if (!string.Equals(Path.GetExtension(output), "." + format, StringComparison.OrdinalIgnoreCase))
-            throw new EditorFailure(EditorErrors.AttachmentFormatMismatch);
+            throw new EditorException(EditorErrors.AttachmentFormatMismatch);
 
         FormatExport artifact;
         if (format == DocumentFormats.Udf)
@@ -228,7 +228,7 @@ internal sealed partial class LocalEditor
         EditorActionIds.AttachDoc => DocumentFormats.Doc,
         EditorActionIds.AttachOdt => DocumentFormats.Odt,
         EditorActionIds.AttachPdf => DocumentFormats.Pdf,
-        _ => throw new EditorFailure(EditorErrors.AttachmentActionUnavailable),
+        _ => throw new EditorException(EditorErrors.AttachmentActionUnavailable),
     };
 
     private Task<FormatExport> ExportAttachmentUdf(string id, string output, CancellationToken token) =>

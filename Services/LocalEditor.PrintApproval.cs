@@ -8,7 +8,7 @@ internal sealed partial class LocalEditor
     {
         bool batch = request.Action == EditorActionIds.PrintBatch;
         if (batch ? request.Documents.Length < 2 : request.Documents.Length != 1)
-            throw new EditorFailure(EditorErrors.PrintDocumentsInvalid);
+            throw new EditorException(EditorErrors.PrintDocumentsInvalid);
 
         List<string> missing = [];
         if (request.Documents.Any(document => string.IsNullOrWhiteSpace(document.OutputPath)))
@@ -25,14 +25,14 @@ internal sealed partial class LocalEditor
 
         var printer = request.Printer!.Trim();
         if (printer.Length > 255 || printer.Any(char.IsControl))
-            throw new EditorFailure(EditorErrors.PrintPrinterInvalid);
+            throw new EditorException(EditorErrors.PrintPrinterInvalid);
         var copies = request.Copies!.Value;
         if (copies < 1)
-            throw new EditorFailure(EditorErrors.PrintCopiesInvalid);
+            throw new EditorException(EditorErrors.PrintCopiesInvalid);
         var (pages, lastPage) = ReadPrintPageRange(request.PageRange!);
         var targets = request.Documents.Select(document => documents.Output(document.OutputPath!, FileExtensions.Pdf)).ToArray();
         if (targets.Distinct(StringComparer.OrdinalIgnoreCase).Count() != targets.Length)
-            throw new EditorFailure(EditorErrors.PrintOutputDuplicate);
+            throw new EditorException(EditorErrors.PrintOutputDuplicate);
 
         var workflow = await Handoff(request.Documents[0].DocumentId, batch ? EditorWorkflowIds.PrintBatch : EditorWorkflowIds.Print, token);
         ApprovalItem[] details =
@@ -55,7 +55,7 @@ internal sealed partial class LocalEditor
                 var pdf = await ExportPdf(request.Documents[index].DocumentId, pending[index], token);
                 previews.Add(pdf);
                 if (lastPage > pdf.PageCount)
-                    throw new EditorFailure(EditorErrors.PrintPageRangeOutOfBounds, index + 1, pdf.PageCount);
+                    throw new EditorException(EditorErrors.PrintPageRangeOutOfBounds, index + 1, pdf.PageCount);
             }
 
             var artifacts = PublishApprovalArtifacts(pending, previews.Select((pdf, index) =>
@@ -80,7 +80,7 @@ internal sealed partial class LocalEditor
         if (value.Equals("all", StringComparison.OrdinalIgnoreCase))
             return ("all", 0);
         if (value.Length > 512)
-            throw new EditorFailure(EditorErrors.PrintPageRangeInvalid);
+            throw new EditorException(EditorErrors.PrintPageRangeInvalid);
 
         List<string> ranges = [];
         int lastPage = 0;
@@ -92,10 +92,10 @@ internal sealed partial class LocalEditor
                 first <= lastPage ||
                 !int.TryParse(limits[^1], NumberStyles.None, CultureInfo.InvariantCulture, out int last) ||
                 last < first)
-                throw new EditorFailure(EditorErrors.PrintPageRangeInvalid);
+                throw new EditorException(EditorErrors.PrintPageRangeInvalid);
             ranges.Add(first == last
                 ? first.ToString(CultureInfo.InvariantCulture)
-                : FormattableString.Invariant($"{first}-{last}"));
+                : string.Create(CultureInfo.InvariantCulture, $"{first}-{last}"));
             lastPage = last;
         }
         return (string.Join(',', ranges), lastPage);

@@ -8,7 +8,7 @@ internal sealed partial class LocalEditor
         Exclusive(async () =>
         {
             if (family == "" || family is { Length: > 128 } || size is < 1 or > 255 || (family == null && size == null))
-                throw new EditorFailure(EditorErrors.FontOptionsInvalid);
+                throw new EditorException(EditorErrors.FontOptionsInvalid);
             var session = Get(id);
             RequireEditable(session);
             var values = await session.Editor.Call(EditorBridgeCommands.SetFont, token, family ?? "", size.HasValue ? WriteNumber(size.Value) : "");
@@ -31,7 +31,7 @@ internal sealed partial class LocalEditor
         Exclusive(async () =>
         {
             if (multiplier is not (1 or 1.15 or 2 or 2.5 or 3))
-                throw new EditorFailure(EditorErrors.LineSpacingUnavailable);
+                throw new EditorException(EditorErrors.LineSpacingUnavailable);
             var session = Get(id);
             RequireEditable(session);
             var values = await session.Editor.Call(EditorBridgeCommands.SetLineSpacing, token,
@@ -70,15 +70,15 @@ internal sealed partial class LocalEditor
             RequireEditable(session);
 
             if (levels is null || levels.Length is < 1 or > EditorLimits.ListLevels)
-                throw new EditorFailure(EditorErrors.ListLevelFormatCountInvalid);
+                throw new EditorException(EditorErrors.ListLevelFormatCountInvalid);
             var formats = new string[EditorLimits.ListLevels];
             Array.Fill(formats, string.Empty);
             foreach (var level in levels)
             {
                 if (level is null || level.Level is < 1 or > EditorLimits.ListLevels || formats[level.Level - 1].Length != 0)
-                    throw new EditorFailure(EditorErrors.ListLevelFormatsInvalid);
+                    throw new EditorException(EditorErrors.ListLevelFormatsInvalid);
                 if (string.IsNullOrWhiteSpace(level.Format) || level.Format.Length > 48)
-                    throw new EditorFailure(EditorErrors.ListNumberFormatInvalid);
+                    throw new EditorException(EditorErrors.ListNumberFormatInvalid);
                 formats[level.Level - 1] = level.Format;
             }
 
@@ -96,15 +96,15 @@ internal sealed partial class LocalEditor
             RequireEditable(session);
 
             if (levels is null || levels.Length is < 1 or > EditorLimits.ListLevels)
-                throw new EditorFailure(EditorErrors.ListLevelIndentCountInvalid);
+                throw new EditorException(EditorErrors.ListLevelIndentCountInvalid);
             var indents = new string[EditorLimits.ListLevels];
             Array.Fill(indents, string.Empty);
             foreach (var level in levels)
             {
                 if (level is null || level.Level is < 1 or > EditorLimits.ListLevels || indents[level.Level - 1].Length != 0)
-                    throw new EditorFailure(EditorErrors.ListLevelIndentsInvalid);
+                    throw new EditorException(EditorErrors.ListLevelIndentsInvalid);
                 if (!float.IsFinite(level.IndentPoints) || level.IndentPoints is < 0 or > short.MaxValue)
-                    throw new EditorFailure(EditorErrors.ListIndentInvalid);
+                    throw new EditorException(EditorErrors.ListIndentInvalid);
                 indents[level.Level - 1] = level.IndentPoints.ToString("R", CultureInfo.InvariantCulture);
             }
             var result = await session.Editor.Call(EditorBridgeCommands.SetListIndents, token, indents);

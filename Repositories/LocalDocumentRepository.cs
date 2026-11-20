@@ -16,13 +16,13 @@ internal sealed class LocalDocumentRepository(EditorSettings settings)
         {
             full = InRoot(path, settings.InputRoot, extension);
         }
-        catch (EditorFailure failure) when (allowOutputRoot && failure.Code == EditorErrorCodes.PathOutsideScope)
+        catch (EditorException failure) when (allowOutputRoot && failure.Code == EditorErrorCodes.PathOutsideScope)
         {
             full = InRoot(path, settings.OutputRoot, extension);
         }
         LocalFilePaths.RequireExistingPlainPath(full);
         if (!File.Exists(full) || new FileInfo(full).Length > maxBytes)
-            throw new EditorFailure(EditorErrors.InputInvalid, extension, maxBytes);
+            throw new EditorException(EditorErrors.InputInvalid, extension, maxBytes);
         return full;
     }
 
@@ -30,11 +30,11 @@ internal sealed class LocalDocumentRepository(EditorSettings settings)
     {
         var extension = Path.GetExtension(path).ToLowerInvariant();
         if (extension is not (FileExtensions.Xml or FileExtensions.Rtf or FileExtensions.Usf))
-            throw new EditorFailure(EditorErrors.ImportFormatUnsupported);
+            throw new EditorException(EditorErrors.ImportFormatUnsupported);
         var full = InRoot(path, settings.InputRoot, extension);
         LocalFilePaths.RequireExistingPlainPath(full);
         if (!File.Exists(full) || new FileInfo(full).Length > EditorLimits.DocumentBytes)
-            throw new EditorFailure(EditorErrors.ImportFileInvalid);
+            throw new EditorException(EditorErrors.ImportFileInvalid);
         return full;
     }
 
@@ -43,11 +43,11 @@ internal sealed class LocalDocumentRepository(EditorSettings settings)
         var extension = Path.GetExtension(path).ToLowerInvariant();
         if (extension is not (FileExtensions.Png or FileExtensions.JpegShort or FileExtensions.Jpeg
             or FileExtensions.Bmp or FileExtensions.Gif or FileExtensions.TiffShort or FileExtensions.Tiff))
-            throw new EditorFailure(EditorErrors.ImageFormatUnsupported);
+            throw new EditorException(EditorErrors.ImageFormatUnsupported);
         var full = InRoot(path, settings.InputRoot, extension);
         LocalFilePaths.RequireExistingPlainPath(full);
         if (!File.Exists(full) || new FileInfo(full).Length > EditorLimits.ImageBytes)
-            throw new EditorFailure(EditorErrors.ImageInvalid);
+            throw new EditorException(EditorErrors.ImageInvalid);
         return full;
     }
 
@@ -56,7 +56,7 @@ internal sealed class LocalDocumentRepository(EditorSettings settings)
         var full = InRoot(path, settings.OutputRoot, extension);
         LocalFilePaths.RequireExistingPlainPath(Path.GetDirectoryName(full)!);
         if (File.Exists(full) || Directory.Exists(full))
-            throw new EditorFailure(EditorErrors.OutputExists);
+            throw new EditorException(EditorErrors.OutputExists);
         return full;
     }
 
@@ -84,10 +84,10 @@ internal sealed class LocalDocumentRepository(EditorSettings settings)
         var folder = Path.GetDirectoryName(full);
         if (!IsBackupName(Path.GetFileName(full)) ||
             !BackupFolders().Any(root => string.Equals(root, folder, StringComparison.OrdinalIgnoreCase)))
-            throw new EditorFailure(EditorErrors.BackupPathOutsideScope);
+            throw new EditorException(EditorErrors.BackupPathOutsideScope);
         LocalFilePaths.RequireExistingPlainPath(full);
         if (!File.Exists(full) || new FileInfo(full).Length is <= 0 or > EditorLimits.DocumentBytes)
-            throw new EditorFailure(EditorErrors.BackupInvalid);
+            throw new EditorException(EditorErrors.BackupInvalid);
         return full;
     }
 
@@ -102,7 +102,7 @@ internal sealed class LocalDocumentRepository(EditorSettings settings)
         var name = Path.GetFileName(full);
         if (relative == "." || relative == ".." || relative.StartsWith(@"..\", StringComparison.Ordinal) ||
             Path.IsPathRooted(relative) || !Path.GetExtension(name).Equals(extension, StringComparison.OrdinalIgnoreCase))
-            throw new EditorFailure(EditorErrors.PathOutsideScope, extension);
+            throw new EditorException(EditorErrors.PathOutsideScope, extension);
         return full;
     }
 }

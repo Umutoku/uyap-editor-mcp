@@ -2,21 +2,21 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.umutoku/uyap-editor-mcp",
   "title": "UYAP Editor MCP",
-  "description": "Local Windows x64 stdio MCP for UYAP Document Editor 5.4.20.",
+  "description": "Local UYAP Document Editor tools for Windows x64",
   "repository": {
-    "source": "github",
-    "url": "https://github.com/Umutoku/uyap-editor-mcp"
+    "url": "https://github.com/Umutoku/uyap-editor-mcp",
+    "source": "github"
   },
   "websiteUrl": "https://github.com/Umutoku/uyap-editor-mcp",
-  "version": "0.18.0",
+  "version": "0.19.0-preview.1",
   "packages": [
     {
-      "fileSha256": "5e8468089baba1c666bc078d916feb9b20be948b8c96b4bb37b9ba2847a0abe2",
-      "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.18.0/uyap-editor-mcp-0.18.0-windows-x64.mcpb",
       "transport": {
         "type": "stdio"
       },
-      "registryType": "mcpb"
+      "registryType": "mcpb",
+      "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.19.0-preview.1/uyap-editor-mcp-0.19.0-preview.1-windows-x64.mcpb",
+      "fileSha256": "5d45103d931dcf47e9ecdf4a15961f33e8f0e72b1e89fd42560064fde5e90d6e"
     }
   ]
 }

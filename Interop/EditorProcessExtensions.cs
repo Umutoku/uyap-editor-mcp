@@ -13,7 +13,7 @@ internal static class EditorProcessExtensions
         {
             [EditorWireValues.True] => true,
             [EditorWireValues.False] => false,
-            _ => throw new EditorFailure(invalidResponse),
+            _ => throw new EditorException(invalidResponse),
         };
     }
 }

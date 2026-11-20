@@ -58,7 +58,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
     {
         var values = await session.Editor.Call(EditorBridgeCommands.CapitalizationState, token);
         if (values.Length != 4 || values.Any(value => value is not (EditorWireValues.True or EditorWireValues.False)))
-            throw new EditorFailure(EditorErrors.CapitalizationResponseInvalid);
+            throw new EditorException(EditorErrors.CapitalizationResponseInvalid);
         return new CapitalizationState(values[0] == EditorWireValues.True, values[1] == EditorWireValues.True, values[2] == EditorWireValues.True, values[3] == EditorWireValues.True);
     }
 
@@ -73,7 +73,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
         var values = await Get(id).Editor.Call(EditorBridgeCommands.Formats, token);
         var filters = values.Chunk(2).ToArray();
         if (filters.Any(pair => pair.Length != 2 || pair[0] is not ("open" or "save")))
-            throw new EditorFailure(EditorErrors.FileFilterResponseInvalid);
+            throw new EditorException(EditorErrors.FileFilterResponseInvalid);
         return new EditorFormats(filters.Where(pair => pair[0] == "open").Select(pair => pair[1]).ToArray(),
             filters.Where(pair => pair[0] == "save").Select(pair => pair[1]).ToArray());
     }, token);
@@ -129,7 +129,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
             if (templateMode)
             {
                 if (opening is not ["template"])
-                    throw new EditorFailure(EditorErrors.TemplateModeNotVerified);
+                    throw new EditorException(EditorErrors.TemplateModeNotVerified);
             }
             else
                 page = await bridge.Page(editor.Pid, token) ?? ParsePage(opening);
@@ -171,7 +171,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
                 return;
         }
         catch (InvalidDataException) { }
-        throw new EditorFailure(EditorErrors.UsfFormatInvalid);
+        throw new EditorException(EditorErrors.UsfFormatInvalid);
     }
 
     private static void ValidateImportRtf(string file)
@@ -180,7 +180,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
         Span<byte> prefix = stackalloc byte[5];
         if (stream.ReadAtLeast(prefix, prefix.Length, false) != prefix.Length ||
             !prefix.SequenceEqual("{\\rtf"u8))
-            throw new EditorFailure(EditorErrors.RtfFormatInvalid);
+            throw new EditorException(EditorErrors.RtfFormatInvalid);
     }
 
     private static void ValidateImportXml(string file)
@@ -196,14 +196,14 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
             };
             using var xml = System.Xml.XmlReader.Create(stream, options);
             if (xml.MoveToContent() != System.Xml.XmlNodeType.Element || xml.Name != "template")
-                throw new EditorFailure(EditorErrors.XmlNotNativeDocument);
+                throw new EditorException(EditorErrors.XmlNotNativeDocument);
             while (xml.Read())
             {
             }
         }
         catch (System.Xml.XmlException)
         {
-            throw new EditorFailure(EditorErrors.XmlFormatInvalid);
+            throw new EditorException(EditorErrors.XmlFormatInvalid);
         }
     }
 
@@ -215,14 +215,14 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
             sessions.Remove(id);
         }
         if (sessions.Count >= 4)
-            throw new EditorFailure(EditorErrors.SessionLimit);
+            throw new EditorException(EditorErrors.SessionLimit);
     }
 
     internal Task<EditModeResult> EditMode(string id, bool? editable, CancellationToken token) => Exclusive(async () =>
     {
         var session = Get(id);
         if (editable == true && !session.EditingAllowed)
-            throw new EditorFailure(EditorErrors.ReadOnlySession);
+            throw new EditorException(EditorErrors.ReadOnlySession);
         var state = await session.Editor.Call(EditorBridgeCommands.EditMode, token, editable switch
         {
             true => "set-writable",
@@ -230,12 +230,12 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
             null => "",
         });
         if (state.Length != 2 || state.Any(value => value is not (EditorWireValues.True or EditorWireValues.False)))
-            throw new EditorFailure(EditorErrors.EditStateResponseInvalid);
+            throw new EditorException(EditorErrors.EditStateResponseInvalid);
         bool nativeEditable = state[0] == EditorWireValues.True;
         if (editable.HasValue)
         {
             if (nativeEditable != editable.Value)
-                throw new EditorFailure(EditorErrors.EditModeUnverified);
+                throw new EditorException(EditorErrors.EditModeUnverified);
             session = session with
             {
                 Editable = editable.Value
@@ -252,7 +252,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
         await session.Editor.Call(EditorBridgeCommands.Close, token);
         if (!session.Editor.Exited && Desktop.Windows(session.Editor.Pid).Any(window =>
                 window.Title.Contains("Editörü v" + EditorSettings.Version + " -", StringComparison.Ordinal)))
-            throw new EditorFailure(EditorErrors.CloseUnverified);
+            throw new EditorException(EditorErrors.CloseUnverified);
         sessions.Remove(id);
         session.Editor.Dispose();
         return new CloseResult(id, true);
@@ -261,7 +261,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
     private Session Get(string id)
     {
         if (!sessions.TryGetValue(id, out var session) || session.Editor.Exited)
-            throw new EditorFailure(EditorErrors.DocumentUnknown);
+            throw new EditorException(EditorErrors.DocumentUnknown);
         return session;
     }
 
@@ -278,7 +278,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
     private static void RequireEditable(Session session)
     {
         if (!session.Editable)
-            throw new EditorFailure(EditorErrors.ReadOnlySession);
+            throw new EditorException(EditorErrors.ReadOnlySession);
     }
 
     private static void PermitEditing(string path)
@@ -288,7 +288,7 @@ internal sealed partial class LocalEditor(EditorSettings settings, LocalDocument
         if (entries.Count(name => name == UdfEntries.Content) != 1 ||
             entries.Count(name => name == "comments.xml") > 1 ||
             entries.Any(name => name is not (UdfEntries.Content or "comments.xml")))
-            throw new EditorFailure(EditorErrors.UdfEditUnverified);
+            throw new EditorException(EditorErrors.UdfEditUnverified);
     }
 
     private static bool OriginalUnchanged(Session session)

@@ -37,7 +37,7 @@ internal sealed class EditorProcess : IDisposable
         start.Environment.Remove("_JAVA_OPTIONS");
         start.Environment.Remove("JDK_JAVA_OPTIONS");
         process = Process.Start(start)
-            ?? throw new EditorFailure(EditorErrors.EditorStartFailed);
+            ?? throw new EditorException(EditorErrors.EditorStartFailed);
         process.BeginErrorReadLine();
     }
 
@@ -48,9 +48,9 @@ internal sealed class EditorProcess : IDisposable
     internal async Task<string[]> Call(string action, CancellationToken cancellationToken, params string[] args)
     {
         if (uncertain)
-            throw new EditorFailure(EditorErrors.EditorStateUncertain);
+            throw new EditorException(EditorErrors.EditorStateUncertain);
         if (process.HasExited)
-            throw new EditorFailure(EditorErrors.EditorWindowClosed);
+            throw new EditorException(EditorErrors.EditorWindowClosed);
 
         cancellationToken.ThrowIfCancellationRequested();
         var id = (++sequence).ToString(CultureInfo.InvariantCulture);
@@ -67,16 +67,16 @@ internal sealed class EditorProcess : IDisposable
                 return ["closed"];
             var fields = response?.Split('\t');
             if (fields is not { Length: >= 2 } || fields[0] != id)
-                throw new EditorFailure(EditorErrors.EditorProtocolError);
+                throw new EditorException(EditorErrors.EditorProtocolError);
             var values = fields.Skip(2).Select(Decode).ToArray();
             if (fields[1] == "OK")
                 return values;
-            throw EditorFailure.FromNative(values.FirstOrDefault());
+            throw EditorException.FromNative(values.FirstOrDefault());
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
             uncertain = true;
-            throw new EditorFailure(EditorErrors.EditorTimeout);
+            throw new EditorException(EditorErrors.EditorTimeout);
         }
         catch (OperationCanceledException)
         {
@@ -86,7 +86,7 @@ internal sealed class EditorProcess : IDisposable
         catch (IOException)
         {
             uncertain = true;
-            throw new EditorFailure(EditorErrors.EditorConnectionLost);
+            throw new EditorException(EditorErrors.EditorConnectionLost);
         }
     }
 

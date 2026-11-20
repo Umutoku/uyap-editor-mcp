@@ -9,10 +9,10 @@ internal sealed partial class LocalEditor
         if (request?.Documents is not { Length: >= 1 and <= 8 } selectedDocuments ||
             selectedDocuments.Any(document => document == null || string.IsNullOrWhiteSpace(document.DocumentId)) ||
             selectedDocuments.Select(document => document.DocumentId).Distinct(StringComparer.Ordinal).Count() != selectedDocuments.Length)
-            throw new EditorFailure(EditorErrors.ApprovalDocumentsInvalid);
+            throw new EditorException(EditorErrors.ApprovalDocumentsInvalid);
 
         if (selectedDocuments.Length != 1 && request.Action is not (EditorActionIds.PrintBatch or EditorActionIds.SignBatch))
-            throw new EditorFailure(EditorErrors.ApprovalDocumentCountInvalid);
+            throw new EditorException(EditorErrors.ApprovalDocumentCountInvalid);
 
         await Exclusive(() =>
         {
@@ -36,7 +36,7 @@ internal sealed partial class LocalEditor
             EditorActionIds.SetProxy => PrepareProxyApproval(request, token),
             EditorActionIds.OpenHelp => PrepareHelpApproval(request, token),
             EditorActionIds.Update => PrepareUpdateApproval(request, token),
-            _ => throw new EditorFailure(EditorErrors.ApprovalActionUnavailable),
+            _ => throw new EditorException(EditorErrors.ApprovalActionUnavailable),
         });
     }
 
@@ -53,10 +53,10 @@ internal sealed partial class LocalEditor
                 DocumentOutputRepository.Publish(stages[index], target);
             }
         }
-        catch (Exception failure) when (index > 0 && failure is EditorFailure or IOException or UnauthorizedAccessException)
+        catch (Exception failure) when (index > 0 && failure is EditorException or IOException or UnauthorizedAccessException)
         {
             var published = string.Join(", ", artifacts.Take(index).Select(artifact => artifact.Path));
-            throw new EditorFailure(EditorErrors.ApprovalOutputPartial, published, failure.Message);
+            throw new EditorException(EditorErrors.ApprovalOutputPartial, published, failure.Message);
         }
         return artifacts;
     }
@@ -90,7 +90,7 @@ internal sealed partial class LocalEditor
             address.HostNameType == UriHostNameType.Unknown || address.Port is < 1 or > 65535 ||
             address.UserInfo.Length != 0 || address.Query.Length != 0 || address.Fragment.Length != 0 ||
             address.AbsolutePath != "/")
-            throw new EditorFailure(EditorErrors.ProxyAddressInvalid);
+            throw new EditorException(EditorErrors.ProxyAddressInvalid);
 
         return new ApprovalReview(request.Action, MenuApprovalStatus(workflow), workflow, [],
             [new("scheme", address.Scheme), new("host", address.IdnHost),
@@ -102,7 +102,7 @@ internal sealed partial class LocalEditor
     {
         var workflow = await Handoff(request.Documents[0].DocumentId, EditorWorkflowIds.Help, token);
         return new ApprovalReview(request.Action, MenuApprovalStatus(workflow), workflow, [],
-            [new("editorHelpAddress", "http://www.uyap.gov.tr/editoryardim/")], MenuMissing(workflow),
+            [new("editorHelpAddress", EditorHelpLinks.Documentation)], MenuMissing(workflow),
             ApprovalText.HelpApprovalStep);
     }
 

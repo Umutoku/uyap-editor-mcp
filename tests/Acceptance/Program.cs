@@ -6,9 +6,9 @@ using UyapEditorMcp;
 using UyapEditorMcp.Acceptance;
 using static UyapEditorMcp.Acceptance.AcceptanceClient;
 
-if (args.Length != 4)
+if (args.Length is < 4 or > 5)
 {
-    Console.Error.WriteLine("Usage: Acceptance <mcp.exe> <editor-directory> <java-bin> <synthetic-udf>");
+    Console.Error.WriteLine("Usage: Acceptance <mcp.exe> <editor-directory> <java-bin> <synthetic-udf> [synthetic-signed-udf]");
     return 2;
 }
 
@@ -21,6 +21,12 @@ try
     var state = scratch.CreateSubdirectory("state");
     var source = Path.Combine(input.FullName, "synthetic.udf");
     File.Copy(Path.GetFullPath(args[3]), source);
+    string? signedSource = null;
+    if (args.Length == 5)
+    {
+        signedSource = Path.Combine(input.FullName, "synthetic-signed.udf");
+        File.Copy(Path.GetFullPath(args[4]), signedSource);
+    }
     var original = File.ReadAllBytes(source);
     var start = new ProcessStartInfo(Path.GetFullPath(args[0]))
     {
@@ -35,7 +41,7 @@ try
     var transport = new StreamClientTransport(server.StandardInput.BaseStream, server.StandardOutput.BaseStream);
     try
     {
-        return await Run(transport, timeout.Token, source, original, input.FullName, output.FullName);
+        return await Run(transport, timeout.Token, source, original, input.FullName, output.FullName, signedSource);
     }
     finally
     {
@@ -52,7 +58,7 @@ finally
 }
 
 static async Task<int> Run(StreamClientTransport transport, CancellationToken cancellationToken,
-    string source, byte[] original, string input, string output)
+    string source, byte[] original, string input, string output, string? signedSource)
 {
     await using var client = await McpClient.CreateAsync(transport, cancellationToken: cancellationToken);
     var tools = await client.ListToolsAsync(cancellationToken: cancellationToken);
@@ -77,6 +83,8 @@ static async Task<int> Run(StreamClientTransport transport, CancellationToken ca
     await test.Call(McpToolNames.Close, ("documentId", id));
 
     await ArchiveAcceptance.Run(test, source, input, output);
+    if (signedSource != null)
+        await SignedImzAcceptance.Run(test, signedSource, output);
     await ApprovalAcceptance.Run(test, source, output);
     Require(original.AsSpan().SequenceEqual(File.ReadAllBytes(source)), "Source UDF changed.");
     Console.WriteLine(JsonSerializer.Serialize(new
@@ -89,6 +97,7 @@ static async Task<int> Run(StreamClientTransport transport, CancellationToken ca
         resourceDescriptions = true,
         formattedResourceErrors = true,
         archivePassed = true,
+        signedImzPassed = signedSource != null,
         approvals = 16,
     }));
     return 0;

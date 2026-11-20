@@ -21,6 +21,8 @@ Sürüm 0.18.0 · UYAP Doküman Editörü 5.4.20 · Windows x64
 
 IMZ doğrulaması kurgu belgelerle yerel dışa aktarma ve imza baytlarının eşleşmesini kapsar. Nitelikli sertifika güveni, kartla imza ve portal kaydı ayrı kabul konularıdır. [Eylem tablosu](uyap-5.4.20-actions.md)
 
+Temiz derlemede 16 onay hazırlığı yeniden geçti. Ayrı PDF denemesinde kaydedilmemiş ekleme ve geri alma, üretilen PDF'de doğrulandı. UYAP, o denemede değişiklik ve geri alma adımlarında şerit düğmesi yerine dahili PDF eylemine geçti. Dolayısıyla yalnızca şerit yolunu şart koşan tekrar testi açık kaldı.
+
 macOS ve Linux yerel sunucu platformu test kapsamında bulunmuyor.
 
 ## Kurgu testini tekrarlama

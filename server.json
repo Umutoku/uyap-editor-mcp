@@ -11,7 +11,7 @@
   "version": "0.18.0",
   "packages": [
     {
-      "fileSha256": "4518b739cd7c809361bf2567a024e392255dbab3085b84bf43754b568a3e895c",
+      "fileSha256": "5e8468089baba1c666bc078d916feb9b20be948b8c96b4bb37b9ba2847a0abe2",
       "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.18.0/uyap-editor-mcp-0.18.0-windows-x64.mcpb",
       "transport": {
         "type": "stdio"

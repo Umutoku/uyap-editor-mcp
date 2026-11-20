@@ -1,0 +1,453 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Windows rejected file or process access.</value>
+  </data>
+  <data name="LocalIoError" xml:space="preserve">
+    <value>The requested local file operation failed.</value>
+  </data>
+  <data name="ActionTextInvalid" xml:space="preserve">
+    <value>Supply text only for default-typed, insert-content, or edit-hf. Only edit-hf accepts empty text.</value>
+  </data>
+  <data name="ApprovalActionUnavailable" xml:space="preserve">
+    <value>Select one of the supported approval actions.</value>
+  </data>
+  <data name="ApprovalDocumentCountInvalid" xml:space="preserve">
+    <value>This action requires one managed document.</value>
+  </data>
+  <data name="ApprovalDocumentsInvalid" xml:space="preserve">
+    <value>Supply one to eight distinct managed document IDs.</value>
+  </data>
+  <data name="ApprovalOutputPartial" xml:space="preserve">
+    <value>The review package could not be completed. Verified files already published: {0}. {1}</value>
+  </data>
+  <data name="ArchiveContentUnsupported" xml:space="preserve">
+    <value>Select a 7z archive with exactly one flat AES-encrypted UDF of up to 50 MiB.</value>
+  </data>
+  <data name="ArchiveContentsUnverified" xml:space="preserve">
+    <value>The encrypted archive does not contain the selected UDF.</value>
+  </data>
+  <data name="ArchiveExtractedSizeMismatch" xml:space="preserve">
+    <value>The recovered UDF size differs from its archive entry.</value>
+  </data>
+  <data name="ArchiveOutputLimit" xml:space="preserve">
+    <value>7-Zip output exceeded its expected limit.</value>
+  </data>
+  <data name="ArchivePasswordEncodingInvalid" xml:space="preserve">
+    <value>Use a UTF-8 password file.</value>
+  </data>
+  <data name="ArchivePasswordInvalid" xml:space="preserve">
+    <value>Use a single password line of 1 to 128 characters.</value>
+  </data>
+  <data name="ArchiveUdfInvalid" xml:space="preserve">
+    <value>The file does not contain a readable UDF document.</value>
+  </data>
+  <data name="AttachmentActionUnavailable" xml:space="preserve">
+    <value>Choose a supported attachment action.</value>
+  </data>
+  <data name="AttachmentFormatMismatch" xml:space="preserve">
+    <value>The output extension must match the attachment action.</value>
+  </data>
+  <data name="AutoTextKindInvalid" xml:space="preserve">
+    <value>Use plain, rich or shortcut.</value>
+  </data>
+  <data name="AutoTextOperationInvalid" xml:space="preserve">
+    <value>Use set or delete.</value>
+  </data>
+  <data name="AutoTextValueInvalid" xml:space="preserve">
+    <value>Provide text for a plain definition or a UDF input for a rich or shortcut definition.</value>
+  </data>
+  <data name="AutomaticTextResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid automatic text list.</value>
+  </data>
+  <data name="BackupInvalid" xml:space="preserve">
+    <value>Select a nonempty native backup file of at most 50 MiB.</value>
+  </data>
+  <data name="BackupOutputMismatch" xml:space="preserve">
+    <value>Recovered bytes differ from the selected backup.</value>
+  </data>
+  <data name="BackupPathOutsideScope" xml:space="preserve">
+    <value>Select a native backup from uyap_list_backups.</value>
+  </data>
+  <data name="BackupRecoveryResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid recovery response.</value>
+  </data>
+  <data name="BackupSizeInvalid" xml:space="preserve">
+    <value>The backup size is outside the supported range.</value>
+  </data>
+  <data name="BackupStale" xml:space="preserve">
+    <value>List backups again before recovering this file.</value>
+  </data>
+  <data name="BackupUdfInvalid" xml:space="preserve">
+    <value>The backup does not contain a readable native UDF.</value>
+  </data>
+  <data name="BatchSizeInvalid" xml:space="preserve">
+    <value>Provide one to eight explicit input/output pairs.</value>
+  </data>
+  <data name="CapitalizationResponseInvalid" xml:space="preserve">
+    <value>The editor returned invalid capitalization settings.</value>
+  </data>
+  <data name="CatalogRangeInvalid" xml:space="preserve">
+    <value>Use offset &gt;= 0 and limit between 1 and 50.</value>
+  </data>
+  <data name="CloseUnverified" xml:space="preserve">
+    <value>The editor still has an open managed window.</value>
+  </data>
+  <data name="CommentListResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid comment list.</value>
+  </data>
+  <data name="CommentResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid comment.</value>
+  </data>
+  <data name="ComparisonChangeIdInvalid" xml:space="preserve">
+    <value>Supply a changeId returned by inspect only for accept_one or reject_one.</value>
+  </data>
+  <data name="ComparisonDecisionInvalid" xml:space="preserve">
+    <value>Inspect without a path, or supply a new UDF output for a resolution.</value>
+  </data>
+  <data name="ComparisonLimitInvalid" xml:space="preserve">
+    <value>Request between one and 50 change previews.</value>
+  </data>
+  <data name="ComparisonNavigationInvalid" xml:space="preserve">
+    <value>Use next or previous on inspect. Supply a changeId from the same comparison as the optional starting group.</value>
+  </data>
+  <data name="ComparisonOffsetInvalid" xml:space="preserve">
+    <value>Use a nonnegative preview offset.</value>
+  </data>
+  <data name="ComparisonResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid comparison.</value>
+  </data>
+  <data name="ConfigMissing" xml:space="preserve">
+    <value>Set --{0} to an existing local folder.</value>
+  </data>
+  <data name="DirectoryMissing" xml:space="preserve">
+    <value>The configured folder must already exist.</value>
+  </data>
+  <data name="DocWordConversionUnverified" xml:space="preserve">
+    <value>Microsoft Word did not verify the DOC round trip.</value>
+  </data>
+  <data name="DocWordDynamicContentUnsupported" xml:space="preserve">
+    <value>The local Word compatibility path accepts generated RTF without fields, external resources, or embedded objects.</value>
+  </data>
+  <data name="DocWordInstanceBusy" xml:space="preserve">
+    <value>The conversion worker could not acquire a separate hidden Microsoft Word instance.</value>
+  </data>
+  <data name="DocWordRuntimeUnavailable" xml:space="preserve">
+    <value>Microsoft Word is unavailable for local DOC conversion.</value>
+  </data>
+  <data name="DocWordTimeout" xml:space="preserve">
+    <value>The Microsoft Word conversion worker did not finish.</value>
+  </data>
+  <data name="DocWorkerMissing" xml:space="preserve">
+    <value>The local conversion worker could not be located.</value>
+  </data>
+  <data name="DocWorkerStartFailed" xml:space="preserve">
+    <value>The local conversion worker could not start.</value>
+  </data>
+  <data name="DocumentModeRequired" xml:space="preserve">
+    <value>Compare versions in the native document editor.</value>
+  </data>
+  <data name="DocumentStateResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid document state.</value>
+  </data>
+  <data name="DocumentUnknown" xml:space="preserve">
+    <value>Open a managed UDF and use its returned document ID.</value>
+  </data>
+  <data name="EditModeUnverified" xml:space="preserve">
+    <value>The native editor did not apply the requested mode.</value>
+  </data>
+  <data name="EditStateResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid edit state.</value>
+  </data>
+  <data name="EditorConnectionLost" xml:space="preserve">
+    <value>The connection to the managed editor closed.</value>
+  </data>
+  <data name="EditorProtocolError" xml:space="preserve">
+    <value>The Java launcher returned an unexpected response.</value>
+  </data>
+  <data name="EditorStartFailed" xml:space="preserve">
+    <value>Java did not start.</value>
+  </data>
+  <data name="EditorStateUncertain" xml:space="preserve">
+    <value>A previous editor request was interrupted. Open a new managed copy.</value>
+  </data>
+  <data name="EditorTimeout" xml:space="preserve">
+    <value>The editor did not confirm completion before the timeout.</value>
+  </data>
+  <data name="EditorUiError" xml:space="preserve">
+    <value>The editor could not complete the requested operation.</value>
+  </data>
+  <data name="EditorWindowClosed" xml:space="preserve">
+    <value>The managed editor has exited.</value>
+  </data>
+  <data name="FileFilterResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid file filter list.</value>
+  </data>
+  <data name="FontOptionsInvalid" xml:space="preserve">
+    <value>Specify an installed native font family or a size from 1 to 255.</value>
+  </data>
+  <data name="FormatOptionInvalid" xml:space="preserve">
+    <value>Page-break markup is an HTML export option.</value>
+  </data>
+  <data name="FormatUnsupported" xml:space="preserve">
+    <value>Use an advertised local export format. PDF uses uyap_export_pdf.</value>
+  </data>
+  <data name="ImageFormatUnsupported" xml:space="preserve">
+    <value>Choose a PNG, JPEG, BMP, GIF or TIFF from the input root.</value>
+  </data>
+  <data name="ImageInvalid" xml:space="preserve">
+    <value>Choose a local image of at most 15 MiB.</value>
+  </data>
+  <data name="ImportFileInvalid" xml:space="preserve">
+    <value>Select a local file of at most 50 MiB under the configured input root.</value>
+  </data>
+  <data name="ImportFormatUnsupported" xml:space="preserve">
+    <value>Choose a native UYAP XML, RTF or USF document.</value>
+  </data>
+  <data name="InputInvalid" xml:space="preserve">
+    <value>Select a local {0} file of at most {1} bytes under the configured folder.</value>
+  </data>
+  <data name="InventoryScopeInvalid" xml:space="preserve">
+    <value>Select menus or actions.</value>
+  </data>
+  <data name="JavaMissing" xml:space="preserve">
+    <value>Configure the bin folder of a Windows x64 Java 8 runtime with Java Access Bridge.</value>
+  </data>
+  <data name="LauncherMissing" xml:space="preserve">
+    <value>Compile the Java 8 launcher with Build.ps1.</value>
+  </data>
+  <data name="LibraryModeInvalid" xml:space="preserve">
+    <value>Use automatic or choose_provider.</value>
+  </data>
+  <data name="LineSpacingUnavailable" xml:space="preserve">
+    <value>Use 1, 1.15, 2, 2.5, or 3.</value>
+  </data>
+  <data name="ListIndentInvalid" xml:space="preserve">
+    <value>Indent must be a finite, nonnegative value in points within UYAP's paragraph inset range.</value>
+  </data>
+  <data name="ListLevelFormatCountInvalid" xml:space="preserve">
+    <value>Supply one to six distinct levels.</value>
+  </data>
+  <data name="ListLevelFormatsInvalid" xml:space="preserve">
+    <value>Levels must be distinct integers from 1 to 6.</value>
+  </data>
+  <data name="ListNumberFormatInvalid" xml:space="preserve">
+    <value>Supply a supported UYAP number or bullet format.</value>
+  </data>
+  <data name="MacroStepsInvalid" xml:space="preserve">
+    <value>Supply one to eight supported formatting or case actions.</value>
+  </data>
+  <data name="MailApprovalDocumentsInvalid" xml:space="preserve">
+    <value>An email draft takes one managed document.</value>
+  </data>
+  <data name="MailAttachmentChanged" xml:space="preserve">
+    <value>The verified attachment changed during draft preparation.</value>
+  </data>
+  <data name="MailDraftPublishFailed" xml:space="preserve">
+    <value>The verified attachment is available at {0}. The local draft could not be published.</value>
+  </data>
+  <data name="MailMessageInvalid" xml:space="preserve">
+    <value>Use a plain text message of at most 16,384 characters.</value>
+  </data>
+  <data name="MailRecipientInvalid" xml:space="preserve">
+    <value>Supply up to 20 plain email addresses without display names.</value>
+  </data>
+  <data name="MailSubjectInvalid" xml:space="preserve">
+    <value>Use a single-line subject of at most 512 characters.</value>
+  </data>
+  <data name="MenuCatalogResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid menu catalog.</value>
+  </data>
+  <data name="OutputExists" xml:space="preserve">
+    <value>The chosen output already exists.</value>
+  </data>
+  <data name="OutputUnverified" xml:space="preserve">
+    <value>The editor did not produce a complete and valid output file.</value>
+  </data>
+  <data name="PagePositionUnverified" xml:space="preserve">
+    <value>Swing and the accessibility bridge reported different page positions.</value>
+  </data>
+  <data name="PageRegionRangeInvalid" xml:space="preserve">
+    <value>Use header or footer and positive page numbers, or -1 to clear the last page.</value>
+  </data>
+  <data name="PageRegionRangeResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid page region range.</value>
+  </data>
+  <data name="PageRegionResponseInvalid" xml:space="preserve">
+    <value>The editor returned an invalid page region.</value>
+  </data>
+  <data name="PathMissing" xml:space="preserve">
+    <value>A configured file or folder does not exist.</value>
+  </data>
+  <data name="PathNotLocal" xml:space="preserve">
+    <value>An absolute path on a local Windows drive is required.</value>
+  </data>
+  <data name="PathNotOnFixedDrive" xml:space="preserve">
+    <value>The path must be on a fixed local drive.</value>
+  </data>
+  <data name="PathOutsideScope" xml:space="preserve">
+    <value>Use an absolute {0} path under the configured folder.</value>
+  </data>
+  <data name="PathRedirected" xml:space="preserve">
+    <value>Use a path without symbolic links or junctions.</value>
+  </data>
+  <data name="PdfSourceStateInvalid" xml:space="preserve">
+    <value>The editor returned an invalid PDF source state.</value>
+  </data>
+  <data name="PrintCopiesInvalid" xml:space="preserve">
+    <value>The number of copies must be positive.</value>
+  </data>
+  <data name="PrintDocumentsInvalid" xml:space="preserve">
+    <value>Choose one document for single printing or at least two for batch printing.</value>
+  </data>
+  <data name="PrintOutputDuplicate" xml:space="preserve">
+    <value>Supply a separate PDF output path for each document.</value>
+  </data>
+  <data name="PrintPageRangeInvalid" xml:space="preserve">
+    <value>Use all or ascending non-overlapping page numbers and ranges, for example 1,3-5.</value>
+  </data>
+  <data name="PrintPageRangeOutOfBounds" xml:space="preserve">
+    <value>The requested range exceeds document {0}, which has {1} pages.</value>
+  </data>
+  <data name="PrintPrinterInvalid" xml:space="preserve">
+    <value>Supply one printer name without control characters.</value>
+  </data>
+  <data name="ProxyAddressInvalid" xml:space="preserve">
+    <value>Supply a proxy scheme, host and valid port without credentials, paths or query text.</value>
+  </data>
+  <data name="RangeInvalid" xml:space="preserve">
+    <value>Use offset &gt;= 0 and a limit between 1 and 100.</value>
+  </data>
+  <data name="ReadOnlyForm" xml:space="preserve">
+    <value>Only cancellation is available for a read-only form.</value>
+  </data>
+  <data name="ReadOnlySession" xml:space="preserve">
+    <value>Open an unsigned UDF copy with editable=true to edit.</value>
+  </data>
+  <data name="RtfFormatInvalid" xml:space="preserve">
+    <value>The selected file lacks a native RTF header.</value>
+  </data>
+  <data name="SessionLimit" xml:space="preserve">
+    <value>Close a managed editor window before opening another one.</value>
+  </data>
+  <data name="SevenZipFailed" xml:space="preserve">
+    <value>7-Zip could not complete the operation. Check the archive and password.</value>
+  </data>
+  <data name="SevenZipMissing" xml:space="preserve">
+    <value>Install the Windows x64 7-Zip command line executable in Program Files.</value>
+  </data>
+  <data name="SevenZipStartFailed" xml:space="preserve">
+    <value>7-Zip did not start.</value>
+  </data>
+  <data name="SevenZipTimeout" xml:space="preserve">
+    <value>7-Zip did not finish before the timeout.</value>
+  </data>
+  <data name="SignatureEntryRequired" xml:space="preserve">
+    <value>The UDF must contain one non-empty signature entry.</value>
+  </data>
+  <data name="SignedExportCommandMissing" xml:space="preserve">
+    <value>The editor did not report its signed export command.</value>
+  </data>
+  <data name="SignedUdfChanged" xml:space="preserve">
+    <value>Reopen the original signed UDF before exporting its signature.</value>
+  </data>
+  <data name="SignedUdfRequired" xml:space="preserve">
+    <value>Open a signed UDF document to export IMZ.</value>
+  </data>
+  <data name="SigningLibraryCloseUnverified" xml:space="preserve">
+    <value>The preview could not be closed.</value>
+  </data>
+  <data name="SigningLibraryModeMissing" xml:space="preserve">
+    <value>The current library mode was not available.</value>
+  </data>
+  <data name="SigningLibraryUnverified" xml:space="preserve">
+    <value>The editor did not open the signing library form.</value>
+  </data>
+  <data name="SigningSelectionInvalid" xml:space="preserve">
+    <value>Use distinct UDF output paths.</value>
+  </data>
+  <data name="SourceChanged" xml:space="preserve">
+    <value>The original UDF changed while exporting its signature.</value>
+  </data>
+  <data name="TemplateModeNotVerified" xml:space="preserve">
+    <value>The native template window was not confirmed.</value>
+  </data>
+  <data name="TextLimit" xml:space="preserve">
+    <value>Use an edit of 8192 UTF-16 code units or fewer.</value>
+  </data>
+  <data name="TypedCharacterInvalid" xml:space="preserve">
+    <value>Supply one printable character for default-typed.</value>
+  </data>
+  <data name="UdfEditUnverified" xml:space="preserve">
+    <value>Editing requires an unsigned UDF with one content.xml and at most one comments.xml.</value>
+  </data>
+  <data name="UdfSignatureFormatInvalid" xml:space="preserve">
+    <value>The UDF signature is not a CMS SignedData container.</value>
+  </data>
+  <data name="UnsupportedEditor" xml:space="preserve">
+    <value>The {0} fingerprint differs from the verified UYAP {1} package.</value>
+  </data>
+  <data name="UsfFormatInvalid" xml:space="preserve">
+    <value>The selected USF lacks a native UYAP content.xml archive member.</value>
+  </data>
+  <data name="ViewOptionsInvalid" xml:space="preserve">
+    <value>Specify zoom in the editor's range or a whitespace setting.</value>
+  </data>
+  <data name="WorkflowUnknown" xml:space="preserve">
+    <value>Select a documented native workflow.</value>
+  </data>
+  <data name="XmlFormatInvalid" xml:space="preserve">
+    <value>A well-formed native UYAP XML without a DTD is required.</value>
+  </data>
+  <data name="XmlNotNativeDocument" xml:space="preserve">
+    <value>The selected XML is not a native UYAP document.</value>
+  </data>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PortalApprovalStep" xml:space="preserve">
+    <value>Yetkili UYAP oturumunda hedef kaydı açın, belgeyi ve kayıt bilgilerini inceleyin ve Sisteme Kaydet adımını onaylayın.</value>
+  </data>
+  <data name="ProxyApprovalStep" xml:space="preserve">
+    <value>Onayladığınız ağ adresini ve gerekiyorsa kimlik bilgilerini UYAP Proxy formuna girip kaydedin.</value>
+  </data>
+  <data name="HelpApprovalStep" xml:space="preserve">
+    <value>Yerel menüde Yardım Özelliklerini Aç komutunu seçerek yardım sayfasını tarayıcıda açın.</value>
+  </data>
+  <data name="UpdateApprovalStep" xml:space="preserve">
+    <value>Editorü Güncelle komutunu seçin. Yerel güncelleyicinin sunduğu sürümü inceleyin ve kurulum kararını verin.</value>
+  </data>
+  <data name="PrintApprovalStep" xml:space="preserve">
+    <value>Önizleme PDF’lerini sırayla kontrol edin. Yazdırma penceresinde yazıcıyı, sayfaları ve kopya sayısını doğrulayarak işi gönderin.</value>
+  </data>
+  <data name="MailApprovalStep" xml:space="preserve">
+    <value>Taslağı ve eki gözden geçir. Gönderici hesabını e-posta istemcisinde seç ve gönderimi orada onayla.</value>
+  </data>
+  <data name="CertificateApprovalStep" xml:space="preserve">
+    <value>Akıllı kartı takın, Sertifikalar penceresinde sertifikayı seçin ve geçerlilik kontrolünü başlatın.</value>
+  </data>
+  <data name="SignedExportApprovalStep" xml:space="preserve">
+    <value>Dışa Aktar penceresinde imzayı doğrulayın, IMZ hedefini seçin ve yerel kaydı onaylayın.</value>
+  </data>
+  <data name="SigningLibraryApprovalStep" xml:space="preserve">
+    <value>İmza Kütüphanesi penceresinde seçiminizi gözden geçirin ve ayarı kendiniz kaydedin.</value>
+  </data>
+  <data name="MobileSigningApprovalStep" xml:space="preserve">
+    <value>Listelenen UDF'yi açın, mobil imzayı başlatın ve isteği telefonunuzda onaylayın.</value>
+  </data>
+  <data name="BatchSigningApprovalStep" xml:space="preserve">
+    <value>Toplu İmzala penceresinde yalnızca listelenen UDF'leri seçin ve kartla imzalamayı onaylayın.</value>
+  </data>
+  <data name="SigningApprovalStep" xml:space="preserve">
+    <value>Listelenen UDF'yi açın, sertifikayı seçin ve imzayı kartınızla onaylayın.</value>
+  </data>
+</root>

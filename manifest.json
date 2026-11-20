@@ -1,0 +1,34 @@
+{
+  "manifest_version": "0.3",
+  "name": "uyap-editor-mcp",
+  "display_name": "UYAP Editor MCP",
+  "version": "0.18.0",
+  "description": "Local UYAP Document Editor tools for Windows x64",
+  "author": { "name": "Umut Oku", "url": "https://github.com/Umutoku" },
+  "repository": { "type": "git", "url": "https://github.com/Umutoku/uyap-editor-mcp" },
+  "documentation": "https://github.com/Umutoku/uyap-editor-mcp/blob/master/docs/INSTALL.md",
+  "privacy_policies": ["https://github.com/Umutoku/uyap-editor-mcp/blob/master/PRIVACY.md"],
+  "compatibility": { "platforms": ["win32"] },
+  "server": {
+    "type": "binary",
+    "entry_point": "app/UyapEditorMcp.exe",
+    "mcp_config": {
+      "command": "${__dirname}/app/UyapEditorMcp.exe",
+      "args": [
+        "--editor-dir", "${user_config.editor}",
+        "--java-bin", "${user_config.java_bin}",
+        "--input-root", "${user_config.input}",
+        "--output-root", "${user_config.output}",
+        "--state-dir", "${user_config.state}"
+      ]
+    }
+  },
+  "user_config": {
+    "editor": { "type": "directory", "title": "UYAP 5.4.20 JAR folder", "description": "Directory holding the verified editor JAR files.", "required": true },
+    "java_bin": { "type": "directory", "title": "Java 8 x64 bin folder", "description": "Directory holding java.exe and WindowsAccessBridge-64.dll.", "required": true },
+    "input": { "type": "directory", "title": "Input folder", "description": "Local workspace containing the documents to open.", "required": true },
+    "output": { "type": "directory", "title": "Output folder", "description": "Local workspace for exports and new document copies.", "required": true },
+    "state": { "type": "directory", "title": "Local editor profile folder", "description": "Local workspace for editor profiles and working copies.", "required": true }
+  },
+  "tools_generated": true
+}

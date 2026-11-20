@@ -32,7 +32,7 @@ internal static class EditorBridgeCommands
     internal const string Page = "page";
     internal const string PageRegionRange = "page_region_range";
     internal const string PageRegions = "page_regions";
-    internal const string Pdf = "pdf";
+    internal const string Pdf = DocumentFormats.Pdf;
     internal const string PdfSourceChanged = "pdf_source_changed";
     internal const string ReadText = "read_text";
     internal const string Ready = "ready";

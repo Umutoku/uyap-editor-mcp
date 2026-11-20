@@ -47,7 +47,10 @@ internal static class WordDocConverter
         }
         catch (OperationCanceledException)
         {
-            try { worker.Kill(); }
+            try
+            {
+                worker.Kill();
+            }
             catch (InvalidOperationException) { }
             if (token.IsCancellationRequested)
                 throw;
@@ -86,11 +89,11 @@ internal static class WordDocConverter
         int? originalSecurity = null;
         try
         {
-            if (!IsStage(input, ".rtf") || !IsStage(output, ".doc") || !File.Exists(input) ||
+            if (!IsStage(input, FileExtensions.Rtf) || !IsStage(output, FileExtensions.Doc) || !File.Exists(input) ||
                 Path.Exists(output) || !string.Equals(Path.GetDirectoryName(input), Path.GetDirectoryName(output),
                     StringComparison.OrdinalIgnoreCase))
                 return ConversionUnverified;
-            EditorSettings.RequireExistingPlainPath(input);
+            LocalFilePaths.RequireExistingPlainPath(input);
             if (HasActiveRtfControls(input))
                 return UnsafeDocument;
             Type? wordType = Type.GetTypeFromProgID("Word.Application");
@@ -197,19 +200,28 @@ internal static class WordDocConverter
     private static string ReadText(dynamic document)
     {
         dynamic content = document.Content;
-        try { return (string)content.Text; }
+        try
+        {
+            return (string)content.Text;
+        }
         finally { Release(content); }
     }
 
     private static void CloseDocument(dynamic document)
     {
-        try { document.Close(SaveChanges: DoNotSaveChanges); }
+        try
+        {
+            document.Close(SaveChanges: DoNotSaveChanges);
+        }
         finally { Release(document); }
     }
 
     private static void Restore(Action operation)
     {
-        try { operation(); }
+        try
+        {
+            operation();
+        }
         catch (COMException) { }
         catch (RuntimeBinderException) { }
     }

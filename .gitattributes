@@ -2,7 +2,6 @@
 *.cs text eol=lf
 *.java text eol=lf
 *.ps1 text eol=lf
-*.py text eol=lf
 *.sln text eol=crlf
 *.resx text eol=lf
 *.udf binary

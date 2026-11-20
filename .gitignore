@@ -1,6 +1,6 @@
 /app/
-/bin/
-/obj/
+bin/
+obj/
 /.build/
 /.codex/
 /.gemini/
@@ -9,7 +9,6 @@
 /exports/
 /dist/
 /java/classes/
-__pycache__/
 *.pfx
 *.p12
 *.key

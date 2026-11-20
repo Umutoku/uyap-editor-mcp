@@ -25,8 +25,10 @@ try
         Arg("output-root"), Arg("state-dir"), builder.Configuration["backup-root"]);
     builder.Services.AddSingleton(settings);
     builder.Services.AddSingleton(provider => new BridgeReader(provider.GetRequiredService<EditorSettings>()));
-    builder.Services.AddSingleton(provider => new LocalEditor(provider.GetRequiredService<EditorSettings>(),
-        provider.GetRequiredService<BridgeReader>()));
+    builder.Services.AddSingleton(_ => new LocalDocumentRepository(settings));
+    builder.Services.AddSingleton(provider => new LocalArchiveService(provider.GetRequiredService<LocalDocumentRepository>()));
+    builder.Services.AddSingleton(provider => new LocalEditor(settings,
+        provider.GetRequiredService<LocalDocumentRepository>(), provider.GetRequiredService<BridgeReader>()));
     builder.Services.AddMcpServer()
         .WithStdioServerTransport()
         .WithTools<EditorTools>();

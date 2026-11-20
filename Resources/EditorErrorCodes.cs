@@ -5,6 +5,7 @@ internal static class EditorErrorCodes
     internal const string AccessDenied = "ACCESS_DENIED";
     internal const string DocOfficeRuntimeUnavailable = "DOC_OFFICE_RUNTIME_UNAVAILABLE";
     internal const string LocalIoError = "LOCAL_IO_ERROR";
+    internal const string SaveDialogTimeout = "SAVE_DIALOG_TIMEOUT";
     internal const string ActionTextInvalid = "ACTION_TEXT_INVALID";
     internal const string ApprovalActionUnavailable = "APPROVAL_ACTION_UNAVAILABLE";
     internal const string ApprovalDocumentCountInvalid = "APPROVAL_DOCUMENT_COUNT_INVALID";

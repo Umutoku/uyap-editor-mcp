@@ -12,7 +12,10 @@ internal sealed class EditorFailure : Exception
         Code = code;
     }
 
-    internal string Code { get; }
+    internal string Code
+    {
+        get;
+    }
 
     internal static EditorFailure FromNative(string? code) =>
         new(code ?? EditorErrors.EditorUiError.Code, EditorResources.Get(EditorErrors.EditorUiError.MessageKey));

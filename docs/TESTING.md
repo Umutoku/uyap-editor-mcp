@@ -1,6 +1,6 @@
 # Test durumu / Test status
 
-Sürüm 0.18.0 · UYAP Doküman Editörü 5.4.20 · Windows x64
+UYAP Doküman Editörü 5.4.20 · Windows x64
 
 **244/275** yerel UYAP eylem kaydında kurgu kabulü tamamlandı. Bu sayı, aynı işlev bir MCP yolu üzerinden doğrulandığında onu da kapsar. **65** MCP aracı Codex App Server tarafından listelendi.
 
@@ -25,23 +25,13 @@ Temiz derlemede 16 onay hazırlığı yeniden geçti. Ayrı PDF denemesinde kayd
 
 macOS ve Linux yerel sunucu platformu test kapsamında bulunmuyor.
 
-## Kurgu testini tekrarlama
+## .NET kabul testini tekrarlama
 
-İlk kez çalıştırmadan önce [kurulumu](INSTALL.md) tamamla. PowerShell'de aşağıdaki örnekteki yolları kendi kurulumuna göre değiştir. Python 3, `pypdf` ve `Pillow` gerekir. 7z senaryosu standart Program Files yoluna kurulu 7-Zip gerektirir.
-
-```powershell
-python -m pip install pypdf Pillow
-python -B ./tests/codex_acceptance.py --codex (Get-Command codex.exe).Source `
-  --mcp ./app/UyapEditorMcp.exe --editor-dir $editor --java-bin $javaBin `
-  --input ./fixtures/sentetik-3-sayfa.udf --output-dir ./exports --state-dir ./.state `
-  --archive-regression
-```
-
-Ek senaryoların listesi için `python -B ./tests/codex_acceptance.py --help` çalıştır. Varsa kendi belgelerine ait test çıktılarının yerine bu üç sayfalık örneği kullan.
-
-MCP'yi bir AI hesabı olmadan doğrudan sınamak için:
+İlk kez çalıştırmadan önce [kurulumu](INSTALL.md) tamamla. PowerShell örneği .NET 10 SDK'yı ve standart Program Files yoluna kurulu 7-Zip'i kullanır. DOC eki için editörün yerel dönüştürücüsü veya Microsoft Word gerekir.
 
 ```powershell
-python -B ./tests/local_stdio.py --mcp ./app/UyapEditorMcp.exe `
-  --editor-dir $editor --java-bin $javaBin --input ./fixtures/sentetik-3-sayfa.udf
+dotnet run --project ./tests/Acceptance/UyapEditorMcp.Acceptance.csproj -c Release -- `
+  ./app/UyapEditorMcp.exe $editor $javaBin ./fixtures/sentetik-3-sayfa.udf
 ```
+
+Bu test geçici bir çalışma dizini açar. UDF, PDF, doğru ve yanlış 7z parolası, araç açıklamaları ve 16 onay hazırlığını doğrular. Önceki Codex koşularının envanteri, .NET kabul projesinin kapsamından daha geniştir.

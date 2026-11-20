@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "uyap-editor-mcp",
   "display_name": "UYAP Editor MCP",
-  "version": "0.18.0",
+  "version": "0.19.0-preview.1",
   "description": "Local UYAP Document Editor tools for Windows x64",
   "author": { "name": "Umut Oku", "url": "https://github.com/Umutoku" },
   "repository": { "type": "git", "url": "https://github.com/Umutoku/uyap-editor-mcp" },

@@ -5,6 +5,12 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UyapEditorMcp", "UyapEditorMcp.csproj", "{3D415250-BDBA-4A6C-AF17-8BC9CFD2ABB9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Acceptance", "Acceptance", "{25852D48-217B-4318-BECB-5007AD5B3D90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UyapEditorMcp.Acceptance", "tests\Acceptance\UyapEditorMcp.Acceptance.csproj", "{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +33,24 @@ Global
 		{3D415250-BDBA-4A6C-AF17-8BC9CFD2ABB9}.Release|x64.Build.0 = Release|Any CPU
 		{3D415250-BDBA-4A6C-AF17-8BC9CFD2ABB9}.Release|x86.ActiveCfg = Release|Any CPU
 		{3D415250-BDBA-4A6C-AF17-8BC9CFD2ABB9}.Release|x86.Build.0 = Release|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Debug|x64.Build.0 = Debug|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Debug|x86.Build.0 = Debug|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Release|x64.ActiveCfg = Release|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Release|x64.Build.0 = Release|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Release|x86.ActiveCfg = Release|Any CPU
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{25852D48-217B-4318-BECB-5007AD5B3D90} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{B2B67B9F-858E-4B18-8BBE-D6C261F2F02D} = {25852D48-217B-4318-BECB-5007AD5B3D90}
 	EndGlobalSection
 EndGlobal

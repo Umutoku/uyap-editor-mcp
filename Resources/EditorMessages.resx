@@ -450,4 +450,226 @@
   <data name="SigningApprovalStep" xml:space="preserve">
     <value>Listelenen UDF'yi açın, sertifikayı seçin ve imzayı kartınızla onaylayın.</value>
   </data>
+  <data name="Status" xml:space="preserve">
+    <value>Return the verified local UYAP Editor version, managed session count and accessibility status.</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open a UDF from the configured input or output folder in a new managed UYAP Editor instance. Returns a document ID and verified page position. Uses a local copy. Optionally copy the two capitalization settings from a currently open managed document into the new profile.</value>
+  </data>
+  <data name="CapitalizationState" xml:space="preserve">
+    <value>Read the two configured capitalization options and whether their native keyboard handlers are active in this managed editor instance. Changes from the capitalization forms take effect in a new editor opened with capitalizationFromDocumentId.</value>
+  </data>
+  <data name="ImportDocument" xml:space="preserve">
+    <value>Open native UYAP XML or USF, or import RTF via the editor's Open dialog, into a new read-only managed document session.</value>
+  </data>
+  <data name="ListFormats" xml:space="preserve">
+    <value>Read the current native Open and Save As chooser filters without opening or writing a file.</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Create a blank editable document in a new managed UYAP Editor session.</value>
+  </data>
+  <data name="OpenTemplate" xml:space="preserve">
+    <value>Launch the native Şablon Editörü. Omit path for a new template, or provide an unsigned UDF from the configured input or output root. Use uyap_ribbon with Şablon and uyap_open_form with add-field for template controls.</value>
+  </data>
+  <data name="ReuseTemplateField" xml:space="preserve">
+    <value>Insert an existing field definition by exact name at a collapsed caret outside fields in the managed native Şablon Editörü.</value>
+  </data>
+  <data name="GetPage" xml:space="preserve">
+    <value>Read the editor's actual current page and its total page count.</value>
+  </data>
+  <data name="ViewState" xml:space="preserve">
+    <value>Read native zoom, whitespace and comment display settings, caret position, selection and document length. Offsets are UTF-16.</value>
+  </data>
+  <data name="SetView" xml:space="preserve">
+    <value>Set a native zoom option or whitespace visibility for one managed editor view, and read back the applied values.</value>
+  </data>
+  <data name="SetFont" xml:space="preserve">
+    <value>Set the native font family and/or point size for the current nonempty selection in an editable working copy.</value>
+  </data>
+  <data name="SetPaletteColor" xml:space="preserve">
+    <value>Apply a #RRGGBB color via the native ribbon palette. Targets are foreground, highlight, paper, or canvas. Text colors need a selection. Paper and canvas update only this managed editor profile.</value>
+  </data>
+  <data name="SetLineSpacing" xml:space="preserve">
+    <value>Apply the native paragraph line spacing preset 1, 1.15, 2, 2.5, or 3 at the caret or across the selection.</value>
+  </data>
+  <data name="ApplyFormatBrush" xml:space="preserve">
+    <value>Apply UYAP's native format brush from a UTF-16 source character to a nonempty UTF-16 text range. Set includeParagraph to also copy the native paragraph format.</value>
+  </data>
+  <data name="SetListPalette" xml:space="preserve">
+    <value>Apply a native multilevel list library preset. Choose none, number_parenthesis, number_dot, uppercase, number_outline, or diamond.</value>
+  </data>
+  <data name="SetCustomList" xml:space="preserve">
+    <value>Create a custom list from the selected plain paragraphs, or update the whole custom or numbered list containing the selection. Supply one to six distinct {level, format} entries for levels 1 through 6. Mix number formats and bullets in the same list. Use NUMBER_TYPE_&lt;family&gt;_&lt;suffix&gt; with family NUMBER, CHAR_SMALL, CHAR_BIG, ROMAN_SMALL, or ROMAN_BIG and suffix DOT, TRE, PARANTHESE, or D_PARANTHESE. NUMBER_TYPE_NUMBER_DOT_3 is the decimal outline format. Bullets use BULLET_TYPE_ followed by ELLIPSE, RECTANGLE, RECTANGLE_D, ARROW, DIAMOND, or TRIANGLE. Unspecified levels retain their current format or use decimal with a dot in a new list.</value>
+  </data>
+  <data name="GetListItem" xml:space="preserve">
+    <value>Read the paragraph at the caret or within a single-paragraph selection. Level is null for a plain paragraph. Numbered reflects the current level's marker, including in mixed lists. ExplicitStart is the stored numbering restart. LevelFormats lists stored format overrides. IndentPoints is the listed paragraph's left indent in points.</value>
+  </data>
+  <data name="SetListLevel" xml:space="preserve">
+    <value>Use UYAP's list level action to change the list item at the caret or within a single-paragraph selection. Level is an integer from 1 to 6.</value>
+  </data>
+  <data name="SetListIndents" xml:space="preserve">
+    <value>Set the native left indent in points for all items of each specified level in the list at the caret or selection. Each {level, indentPoints} entry targets an existing level from 1 to 6. UYAP positions its number or bullet from the resulting paragraph layout.</value>
+  </data>
+  <data name="SetNumberingStart" xml:space="preserve">
+    <value>Restart UYAP numbering at the current numbered list item using a positive startAt. The editor may move following items into the restarted run. Place the caret in one item or select text within that paragraph.</value>
+  </data>
+  <data name="ContinueNumbering" xml:space="preserve">
+    <value>Use UYAP's Continue from previous list action on the numbered item at the caret or within a single-paragraph selection. The editor finds the preceding numbered list and may move following items into that list. Requires an editable document.</value>
+  </data>
+  <data name="ListShortcuts" xml:space="preserve">
+    <value>List exact action names, labels and keyboard accelerators from the active UYAP editor action set.</value>
+  </data>
+  <data name="GoToPage" xml:space="preserve">
+    <value>Use UYAP's Sayfaya Git command to select a 1-based page and verify the editor's resulting position.</value>
+  </data>
+  <data name="ExportPdf" xml:space="preserve">
+    <value>Invoke the editor's Dosya &gt; PDF Olarak Kaydet command. Publish a validated PDF to a new local file.</value>
+  </data>
+  <data name="ExportSignedImz" xml:space="preserve">
+    <value>Export the existing signature data through the editor's Dosya &gt; Dışa Aktar ribbon to a new local IMZ. Does not sign or validate certificate trust.</value>
+  </data>
+  <data name="Encrypt7z" xml:space="preserve">
+    <value>Pack one local UDF into a new AES-encrypted 7z archive with encrypted headers. Supply a password file path under the input root. Never include the password in a tool call.</value>
+  </data>
+  <data name="Extract7z" xml:space="preserve">
+    <value>Recover a single AES-encrypted UDF entry from a local 7z archive into a new UDF. Supply a password file path under the input root. Use uyap_open to open the recovered file.</value>
+  </data>
+  <data name="SaveCopy" xml:space="preserve">
+    <value>Save an editable UDF via the editor's Farklı Kaydet command to a new local file.</value>
+  </data>
+  <data name="ListBackups" xml:space="preserve">
+    <value>List UYAP autosave files in managed profiles and the optional explicitly configured backup folder.</value>
+  </data>
+  <data name="RestoreBackup" xml:space="preserve">
+    <value>Recover a listed UYAP autosave through the native backup panel into a new local UDF. Supply its listed SHA-256.</value>
+  </data>
+  <data name="ExportDocument" xml:space="preserve">
+    <value>Export using a local editor file filter or native renderer. HTML can include page-break markup. Use uyap_export_pdf for PDF.</value>
+  </data>
+  <data name="BatchExport" xml:space="preserve">
+    <value>Export an explicit batch of UDF files via the native editor. Reports each output and errors independently.</value>
+  </data>
+  <data name="ReadText" xml:space="preserve">
+    <value>Read an explicit bounded excerpt of the active UDF. Offsets are UTF-16 code units.</value>
+  </data>
+  <data name="PageRegions" xml:space="preserve">
+    <value>Read native header and footer text and UTF-16 bounds, including whether each region is present.</value>
+  </data>
+  <data name="SetPageRegion" xml:space="preserve">
+    <value>Create or replace the single-line text of a native header or footer in an editable copy. Region is header or footer.</value>
+  </data>
+  <data name="PageRegionRange" xml:space="preserve">
+    <value>Read or set the native first and last pages of an existing header or footer (1-based). Omit both to read. Set lastPage to -1 to remove the last-page limit.</value>
+  </data>
+  <data name="SelectText" xml:space="preserve">
+    <value>Select an exact UTF-16 range in the managed UYAP document. Use equal offsets to place the caret.</value>
+  </data>
+  <data name="CompareUdf" xml:space="preserve">
+    <value>Use native UYAP version comparison with a local baseline UDF. Inspect returns a page of changes with changeId values shared by adjacent ranges in a change group. Use nextOffset to continue paging. Optionally set navigationDirection to next or previous during inspect to verify the selected change in the comparison window. Supply navigationFromChangeId to navigate from a known group, or omit it to start at the respective document boundary. Accept_all and reject_all resolve every change. Accept_one applies one group to the baseline and keeps other groups on the baseline side. Reject_one reverts one group in the current version and keeps other groups on the current side. Supply changeId for an individual decision and outputPath for any resolution. Text ranges use UTF-16.</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Find literal text in the active UDF and select the next match. Returns UTF-16 offsets.</value>
+  </data>
+  <data name="SpellCheck" xml:space="preserve">
+    <value>Check a bounded part of the active UDF using UYAP's Turkish spelling engine. Returns misspelled words, UTF-16 ranges and suggestions. Use nextStart to continue until complete.</value>
+  </data>
+  <data name="ApplySpelling" xml:space="preserve">
+    <value>Apply a current UYAP spelling suggestion to an editable copy. The exact UTF-16 range and expected word must still match.</value>
+  </data>
+  <data name="ReplaceText" xml:space="preserve">
+    <value>Replace a UTF-16 range in an editable working copy, or insert when start equals end.</value>
+  </data>
+  <data name="ListAutomaticText" xml:space="preserve">
+    <value>List native plain and rich automatic-text definitions and managed text shortcuts in this document's isolated UYAP profile.</value>
+  </data>
+  <data name="SetAutomaticText" xml:space="preserve">
+    <value>Set or delete an automatic-text key in the managed profile. Supply text for plain or richSourcePath to a local unsigned UDF for rich and shortcut. For a shortcut the key is a Swing key stroke such as 'ctrl shift pressed F12'.</value>
+  </data>
+  <data name="InsertAutomaticText" xml:space="preserve">
+    <value>Use the native UYAP automatic-text definition to replace the current editable selection, or insert at the caret.</value>
+  </data>
+  <data name="ListComments" xml:space="preserve">
+    <value>List native UYAP comments and their UTF-16 ranges in a managed document. Limit must be 1 through 20.</value>
+  </data>
+  <data name="AddComment" xml:space="preserve">
+    <value>Add a native UYAP comment with text to a nonempty UTF-16 range in an editable working copy. Native type is 1 or 2.</value>
+  </data>
+  <data name="EditComment" xml:space="preserve">
+    <value>Replace native UYAP comment text in an editable working copy. Supply the index, range and text from the latest comment listing.</value>
+  </data>
+  <data name="ChangeComment" xml:space="preserve">
+    <value>Delete a native UYAP comment or toggle whether it is visible in print. Use operation delete or toggle_type and supply the latest index, UTF-16 range, type and text from uyap_list_comments.</value>
+  </data>
+  <data name="InsertImage" xml:space="preserve">
+    <value>Choose an authorized local image for an editable copy using the native insert-image or page background action.</value>
+  </data>
+  <data name="ListActions" xml:space="preserve">
+    <value>List the live Swing action IDs of the current editor. Discovery includes actions that require user interaction.</value>
+  </data>
+  <data name="MenuInventory" xml:space="preserve">
+    <value>List native menu paths and availability or Swing action IDs and their labels. Use scope menus or actions and page using offset and limit.</value>
+  </data>
+  <data name="ListWindows" xml:space="preserve">
+    <value>List this MCP server's open UYAP document and template windows and their document IDs.</value>
+  </data>
+  <data name="Ribbon" xml:space="preserve">
+    <value>Discover the current UYAP ribbon tabs. Provide a tab name to inspect its live command labels and enabled states.</value>
+  </data>
+  <data name="RunAction" xml:space="preserve">
+    <value>Invoke a supported local selection, view, editing or formatting action by exact action ID on the managed UDF. For default-typed supply one printable character as text. For insert-content supply the text to insert. For edit-hf, supply replacement text for the existing header or, if absent, footer. application-freemem-level1 clears this session's undo/redo history and isolated clipboard.</value>
+  </data>
+  <data name="RunMacro" xml:space="preserve">
+    <value>Record one to eight native formatting or case actions on the first selection, stop recording, then replay on a separate selection in the same editable document. All offsets are UTF-16. Supported IDs are font-bold, font-italic, font-underline, left-justify, right-justify, center-justify, both-justify, changeCase-upper and changeCase-lower.</value>
+  </data>
+  <data name="OpenForm" xml:space="preserve">
+    <value>Open a supported local editor action dialog, such as table insertion, paragraph formatting, page setup, comments or viewing signatures. Returns a revision and actionable controls.</value>
+  </data>
+  <data name="InspectForm" xml:space="preserve">
+    <value>Read the managed local editor dialog, current control values and a fresh revision for the next action.</value>
+  </data>
+  <data name="FormInput" xml:space="preserve">
+    <value>Apply write, choose, toggle, press, cancel, or color (#RRGGBB on native color settings) to a managed local editor dialog. Use the latest revision and control ID.</value>
+  </data>
+  <data name="PrepareWorkflow" xml:space="preserve">
+    <value>Select the editor tab for a native user workflow and report command availability. Supports signing, certificates, physical printing, sending, portal save, recovery, signed export, update, proxy settings, and external help.</value>
+  </data>
+  <data name="PrepareAttachment" xml:space="preserve">
+    <value>Prepare a local email attachment from an open managed document. Select attachto-mail (UDF), attachto-mail-doc (DOC), attachto-mail-odt (ODT), or attachto-mail-pdf (PDF) and provide a new output path with the matching extension. The resulting file is ready for the user to attach.</value>
+  </data>
+  <data name="PrepareApproval" xml:space="preserve">
+    <value>Prepare local review artifacts and list the exact manual confirmation step for a supported UYAP action. Pass an ordered list of managed documents and the action-specific settings. The result is awaiting_user_confirmation, input_required, or blocked_prerequisite.</value>
+  </data>
+  <data name="EditMode" xml:space="preserve">
+    <value>Read or set the managed document edit mode. Set editable=false to make the native pane and MCP read-only, or editable=true to restore editing in a session originally opened with editing authorization. Omit editable to inspect without changing the mode.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close a managed UYAP document if it can be closed without discarding unsaved edits.</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Exact UYAP action ID.</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Managed document IDs in review order. Supply explicit local output paths for any requested drafts or copies.</value>
+  </data>
+  <data name="BridgeReady" xml:space="preserve">
+    <value>ready for a managed document</value>
+  </data>
+  <data name="BridgeWindowMissing" xml:space="preserve">
+    <value>managed HWND not found</value>
+  </data>
+  <data name="BridgeTimedOut" xml:space="preserve">
+    <value>bridge timed out</value>
+  </data>
+  <data name="BridgeContextMissing" xml:space="preserve">
+    <value>native bridge returned no window context</value>
+  </data>
+  <data name="BridgeElementMissing" xml:space="preserve">
+    <value>bridge context available but element missing</value>
+  </data>
+  <data name="BridgeConnected" xml:space="preserve">
+    <value>connected</value>
+  </data>
+  <data name="BridgeUnavailable" xml:space="preserve">
+    <value>native bridge DLL unavailable</value>
+  </data>
 </root>

@@ -6,6 +6,9 @@
 | --- | --- |
 | Microsoft Defender özel taraması | Yayın klasörü, derlenmiş dosyalar ve yayın arşivleri tarandı. Tehdit bulunmadı. Çıkış kodu 0, imza sürümü 1.463.368.0. |
 | NuGet güvenlik duyuruları | Doğrudan ve dolaylı .NET bağımlılıkları denetlendi. Yapılandırılmış kaynaklarda güvenlik açığı duyurusu bulunmadı. |
+| Jotti · 0.18.0 ZIP | 14 motordan biri `PeFileDrop` bildirdi. 13 motor bulgu bildirmedi. [ZIP raporu](https://virusscan.jotti.org/en-US/filescanjob/3lbtyga51z) |
+| Jotti · 0.18.0 çalıştırılabilir dosya ve .NET DLL | Dosyalar ayrı tarandı. ZXCore bu dosya türlerinde sonuç vermedi. [Dosya raporları](https://virusscan.jotti.org/en-US/filescanjob/s9htmldv2e,vq1h7kkioi) |
+| GitHub CodeQL ve Dependabot | Açık depoda etkin. İlk CodeQL koşusunun bulguları incelemede. [CodeQL koşusu](https://github.com/Umutoku/uyap-editor-mcp/actions/runs/44708516352) |
 | Kaynak dosya kontrolü | Yayın kopyası yerel kullanıcı yolu ve yaygın anahtar biçimleri açısından tarandı. Release derlemesinde hata ayıklama simgeleri kapalı. Kurgu örnekler dışında belge, çalışma profili, tanılama günlüğü, özel anahtar ve UYAP JAR dosyaları dağıtıma alınmadı. |
 | Yerel çalışma | Kurgu UDF, doğrudan başlatılan stdio sürecinde bir AI hesabı kullanılmadan açıldı ve PDF üretildi. |
 

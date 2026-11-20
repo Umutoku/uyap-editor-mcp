@@ -1,0 +1,65 @@
+name: Publish MCP Registry entry
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version of the public stable GitHub release
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-mcp-registry
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - name: Validate the GitHub release and its metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          tag="v$VERSION"
+          bundle="uyap-editor-mcp-$VERSION-windows-x64.mcpb"
+          base_url="https://github.com/$GITHUB_REPOSITORY"
+          bundle_url="$base_url/releases/download/$tag/$bundle"
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" > release.json
+          jq -e '.draft == false and .prerelease == false' release.json > /dev/null
+          digest=$(jq -er --arg bundle "$bundle" \
+            '.assets[] | select(.name == $bundle and .state == "uploaded") | .digest' release.json)
+          [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern server.json
+          jq -e --arg version "$VERSION" --arg repository "$base_url" \
+            --arg bundle "$bundle_url" --arg digest "${digest#sha256:}" '
+              .name == "io.github.umutoku/uyap-editor-mcp"
+              and .version == $version and .repository.url == $repository
+              and (.packages | length == 1)
+              and .packages[0].registryType == "mcpb"
+              and .packages[0].transport.type == "stdio"
+              and .packages[0].identifier == $bundle
+              and .packages[0].fileSha256 == $digest
+            ' server.json > /dev/null
+
+      - name: Publish the verified local package entry
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive=mcp-publisher_linux_amd64.tar.gz
+          curl --fail --location --silent --show-error \
+            "https://github.com/modelcontextprotocol/registry/releases/download/v1.8.9/$archive" \
+            --output "$archive"
+          echo "4d527ca8f1ced0394c962dc925c2a4a4addef441cbefd62501c875e9481823a8  $archive" | sha256sum --check
+          tar -xz --file "$archive" mcp-publisher
+          ./mcp-publisher validate server.json
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish server.json

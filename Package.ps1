@@ -22,7 +22,7 @@ foreach ($folder in @('java', 'runtimes')) {
         Copy-Item -LiteralPath $dependency -Destination $bundleApp.FullName -Recurse
     }
 }
-foreach ($item in @('manifest.json', 'README.md', 'PRIVACY.md', 'Setup-Windows.ps1', 'docs', 'fixtures', 'third-party')) {
+foreach ($item in @('manifest.json', 'README.md', 'PRIVACY.md', 'LICENSE', 'Setup-Windows.ps1', 'docs', 'fixtures', 'third-party')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $item) -Destination $bundle.FullName -Recurse
 }
 if (Get-ChildItem -LiteralPath $bundle.FullName -Recurse -File |

@@ -2,6 +2,8 @@
 
 UYAP Doküman Editörü 5.4.20’yi **Windows x64’te yerel olarak** kullanan 65 araçlık bir MCP sunucusu. UDF açabilir, sayfalar arasında gezebilir, belgeyi düzenleyebilir ve editörün kendi menüleriyle çıktı alabilirsin. Codex ile belge akışı doğrulandı. Claude, Gemini CLI, Antigravity ve OpenCode için kurulum ve test durumu aşağıda yer alıyor.
 
+Bu, bağımsız bir açık kaynak projesidir. UYAP Doküman Editörü’nü [Adalet Bakanlığının resmî sitesinden](https://uyap.gov.tr/uyap-editor/) ayrı kur.
+
 ![UYAP Doküman Editörü’nde kurgu inceleme notu ve sağda üç yorum](docs/images/uyap-kurgu-inceleme.png)
 
 *Gerçek UYAP penceresinde kurgu inceleme notu ve yorumları. IMZ dışa aktarma ayrı bir kurgu CMS imzalı UDF ile doğrulandı.*
@@ -195,3 +197,5 @@ Dağıtım dosyaları GitHub Releases’te yayımlanır. Resmî MCP Registry iç
 ## Geliştirme
 
 Visual Studio’da `UyapEditorMcp.sln` dosyasını aç. Geliştirme için .NET 10 SDK ve Java 8 hedefini derleyebilen bir JDK gerekir. Son kullanıcı arşivi derleme araçları gerektirmez. [Kaynaktan derleme](docs/INSTALL.md#kaynaktan-derleme) · [Mimari](docs/ARCHITECTURE.md) · [Kod kalitesi](docs/CODE-QUALITY.md)
+
+Projenin kaynak kodu MIT lisansıyla yayımlanır. UYAP Doküman Editörü ayrı kurulur. Paketle gelen üçüncü taraf bileşenlerin lisansları kendi bildirimlerinde yer alır. [MIT lisansı](LICENSE) · [Üçüncü taraf bildirimleri](third-party/README.md)

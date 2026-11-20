@@ -1,14 +1,18 @@
 # UYAP Editor MCP
 
-![UYAP Editor MCP mimarisi](docs/images/uyap-editor-mcp.png)
-
 UYAP Doküman Editörü 5.4.20’yi **Windows x64’te yerel olarak** kullanan 65 araçlık bir MCP sunucusu. UDF açabilir, sayfalar arasında gezebilir, belgeyi düzenleyebilir ve editörün kendi menüleriyle çıktı alabilirsin. Codex ile belge akışı doğrulandı. Claude, Gemini CLI, Antigravity ve OpenCode için kurulum ve test durumu aşağıda yer alıyor.
+
+![UYAP Doküman Editörü’nde kurgu inceleme notu ve sağda üç yorum](docs/images/uyap-kurgu-inceleme.png)
+
+*Gerçek UYAP penceresinde kurgu inceleme notu ve yorumları. Aynı belgenin kurgu CMS imzalı kopyasından IMZ dışa aktarma doğrulandı.*
 
 Sunucu Windows’ta ayrı bir süreç olarak çalışır. İstemci araç çağrılarını ve sonuçlarını `stdio` üzerinden alır ve gönderir. Proje belge, kullanım verisi veya telemetri toplamaz. Belge metnini isteyen bir çağrı yaparsan seçtiğin AI istemcisi bu metni alır ve kendi veri politikasını uygular. [Gizlilik ve veri akışı](PRIVACY.md)
 
 [Windows kurulumu](#windows-kurulumu) · [İlk deneme](#ilk-deneme) · [Kaldırma](#kaldırma) · [Test durumu](#test-durumu) · [MCP katalogları](#mcp-katalogları)
 
 ## Nasıl çalışır
+
+![UYAP Editor MCP mimarisi](docs/images/uyap-editor-mcp.png)
 
 İstemcide “UDF’yi aç, üçüncü sayfaya git ve bir PDF oluştur” diye yazarsın. İstemci sırayla `uyap_open`, `uyap_go_to_page` ve `uyap_export_pdf` araçlarını çağırır. Yerel MCP, Java köprüsüyle UYAP’ın belge motoruna ve menülerine erişir. İstemciye belge kimliğini, doğrulanan sayfayı, PDF yolunu ve çıktı özetini döndürür. Bu akış için MCP bağlantısı yeterlidir.
 
@@ -140,8 +144,6 @@ OpenCode 1 kullanıyorsan aşağıdaki komutun çıktısını proje yapılandır
 ```
 
 ## İlk deneme
-
-![UYAP Doküman Editörü 5.4.20’de MCP ile oluşturulmuş kurgu belge ve Dosya şeridi](docs/images/uyap-kurgu-belge.png)
 
 > UYAP MCP ile önce editör sürümünü kontrol et. Girdi klasöründeki sentetik-3-sayfa.udf dosyasını aç. Üçüncü sayfaya git. Çıktı klasöründe kurgu-deneme.pdf oluştur ve PDF’nin üç sayfa olduğunu doğrula.
 

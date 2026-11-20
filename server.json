@@ -11,12 +11,12 @@
   "version": "0.19.0",
   "packages": [
     {
-      "fileSha256": "c5bdd96ed6227b7473200dcdcb86a5e4ff0713cbd569c1558549940775d85470",
       "transport": {
         "type": "stdio"
       },
-      "registryType": "mcpb",
-      "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.19.0/uyap-editor-mcp-0.19.0-windows-x64.mcpb"
+      "fileSha256": "98ee83f4d2ca4c72b8718fd7ad520b677a1dd336964a08edd5eac0ee55ddce2a",
+      "identifier": "https://github.com/Umutoku/uyap-editor-mcp/releases/download/v0.19.0/uyap-editor-mcp-0.19.0-windows-x64.mcpb",
+      "registryType": "mcpb"
     }
   ]
 }

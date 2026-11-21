@@ -4,6 +4,14 @@
 | --- | --- | --- |
 | GitHub Releases | Windows ZIP ve MCPB | [0.19.0 Windows sürümü](https://github.com/Umutoku/uyap-editor-mcp/releases/tag/v0.19.0). 0.18.0 çevrimiçi tarama bulgusu kendi sürüm notunda. |
 | Resmî MCP Registry | GitHub Releases’teki Windows MCPB bağlantısı ve SHA-256 | [0.19.0 kaydı yayında](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.Umutoku%2Fuyap-editor-mcp/versions/0.19.0). Paket özeti doğrulandı. |
+| mcp.tc | Açık GitHub deposu ve Windows MCPB | [Katalog kaydı yayında](https://mcp.tc/i/uyap-editor). Yerel stdio olarak listeleniyor. |
+| MCP.Directory | Açık GitHub deposu | [Ücretsiz başvuru](https://mcp.directory/submit) alındı. Katalog incelemesi bekleniyor. |
+| MCP Market | Açık GitHub deposu | [Ücretsiz sıraya](https://mcpmarket.com/submit) alındı. Katalog, başvuru sırasında yaklaşık 4–6 hafta bekleme süresi gösterdi. |
+| MCPServers.org | Açık GitHub deposu ve Registry kimliği | [Ücretsiz başvuru](https://mcpservers.org/submit) alındı. Katalog incelemesi bekleniyor. |
+| AllMCPs | Açık GitHub deposu | [Başvuru inceleme sırasında](https://allmcps.com/mcp/uyap-editor-mcp). |
+| TensorBlock MCP Index | Açık GitHub deposu | [Katalog başvurusu](https://github.com/TensorBlock/awesome-mcp-servers/issues/6544) incelemeye açık. |
+| Awesome MCP Servers | Açık GitHub deposu | [Listeye ekleme isteği](https://github.com/punkpeye/awesome-mcp-servers/pull/20224) incelemeye açık. |
+| Socketlist | GitHub `mcp-server` konu etiketi | [Keşif etiketi](https://github.com/topics/mcp-server) depoya eklendi. Katalogda görünürlük henüz doğrulanmadı. |
 | MCP.so | Açık GitHub deposu | [Başvuru gönderildi](https://github.com/chatmcp/mcpso/issues/1#issuecomment-7041150758). Katalog kaydı bekliyor. |
 | GitHub MCP Registry | GitHub’ın ayrı, seçkili kataloğu | Listeleme doğrulanmadı. [GitHub MCP Registry](https://github.com/mcp) |
 | Claude Desktop | GitHub’dan Windows `.mcpb` dosyasını indirip elle ekleme | MCPB manifesti doğrulandı. Katalog başvuru formu Google oturumu istiyor. [Kurulum ve başvuru](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop) |
@@ -27,3 +35,5 @@ gh workflow run publish-mcp-registry.yml --repo Umutoku/uyap-editor-mcp -f versi
 Başarılı bir yayın sonrasında Registry API’sinden aynı sürümü ve dosya özetini doğrula. Bu modelde istemciler MCP’yi kullanıcının Windows oturumunda başlatır. Registry, dağıtılan dosyalar için GitHub Release bağlantısını kullanır. [MCP Registry yayın rehberi](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/github-actions.mdx) · [MCPB paket kuralları](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/package-types.mdx)
 
 Katalog kaydı ve uygulama içi listeleme ayrı işlemlerdir. Bir katalog kendi başvuru veya inceleme sürecini gerektiriyorsa yayımlanan sürüm bağlantısını, kaynak deposunu, Windows x64 gereksinimini ve güvenlik raporlarını başvuruya ekle.
+
+Katalog başvuruları [MIT lisanslı açık kaynak MCP deposuna](https://github.com/Umutoku/uyap-editor-mcp) yönlendirir. UYAP Doküman Editörü kullanıcının Windows bilgisayarına ayrıca kurulur.

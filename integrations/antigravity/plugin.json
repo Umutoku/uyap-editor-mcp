@@ -1,0 +1,25 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "uyap-editor",
+  "displayName": "UYAP Belge Araçları",
+  "version": "0.19.0",
+  "description": "Independent Windows x64 integration for the installed UYAP Document Editor. Open and edit local UDF files and export PDF with the native editor.",
+  "logo": "uyap-antigravity.png",
+  "suggestedPrompts": [
+    "UYAP Editör sürümünü doğrula ve kurgu UDF’yi aç.",
+    "Kurgu belgenin üçüncü sayfasına git ve PDF hazırla."
+  ],
+  "author": {
+    "name": "Umut Oku",
+    "url": "https://github.com/Umutoku"
+  },
+  "homepage": "https://github.com/Umutoku/uyap-editor-mcp#antigravity",
+  "repository": "https://github.com/Umutoku/uyap-editor-mcp",
+  "license": "MIT",
+  "keywords": [
+    "uyap",
+    "udf",
+    "windows",
+    "local-mcp"
+  ]
+}

@@ -123,6 +123,13 @@ gemini mcp list
 
 ### Antigravity
 
+Windows için [yerel Antigravity eklentisi](integrations/antigravity) bu depoda bulunur. Antigravity CLI ile kaynak klasörünü doğrulayıp kurabilirsin. Kurulumda mevcut Windows MCP paketinin ve yerel klasörlerin yollarını gir.
+
+```powershell
+agy plugin validate .\integrations\antigravity
+agy plugin install .\integrations\antigravity
+```
+
 Antigravity’nin MCP ayarlarından ham yapılandırmayı aç. Üretilen `uyap_editor` kaydını mevcut `mcpServers` nesnesine ekle. [Antigravity MCP belgeleri](https://antigravity.google/docs/mcp?app=antigravity)
 
 ```powershell

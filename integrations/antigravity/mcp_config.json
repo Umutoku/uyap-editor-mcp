@@ -1,0 +1,49 @@
+{
+  "mcpServers": {
+    "documents": {
+      "command": "powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "${PLUGIN_ROOT}/scripts/Start-UyapMcp.ps1",
+        "${UYAP_MCP_EXECUTABLE}",
+        "${UYAP_EDITOR_DIRECTORY}",
+        "${UYAP_JAVA_BIN}",
+        "${UYAP_INPUT_DIRECTORY}",
+        "${UYAP_OUTPUT_DIRECTORY}",
+        "${PLUGIN_DATA}"
+      ],
+      "variables": [
+        {
+          "name": "UYAP_MCP_EXECUTABLE",
+          "title": "UYAP Editor MCP executable",
+          "description": "Absolute path to app/UyapEditorMcp.exe from the Windows x64 release.",
+          "link": "https://github.com/Umutoku/uyap-editor-mcp/releases/latest"
+        },
+        {
+          "name": "UYAP_EDITOR_DIRECTORY",
+          "title": "UYAP Editor 5.4.20 folder",
+          "description": "Installed Windows folder containing editor_lib.jar.",
+          "link": "https://uyap.gov.tr/uyap-editor/"
+        },
+        {
+          "name": "UYAP_JAVA_BIN",
+          "title": "Java 8 x64 bin folder",
+          "description": "Local folder containing java.exe and WindowsAccessBridge-64.dll."
+        },
+        {
+          "name": "UYAP_INPUT_DIRECTORY",
+          "title": "Local input folder",
+          "description": "Existing folder on a local fixed drive containing documents you choose to open."
+        },
+        {
+          "name": "UYAP_OUTPUT_DIRECTORY",
+          "title": "Local output folder",
+          "description": "Existing folder on a local fixed drive for new document copies and exports."
+        }
+      ]
+    }
+  }
+}

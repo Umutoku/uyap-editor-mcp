@@ -7,9 +7,9 @@
 | mcp.tc | Açık GitHub deposu ve Windows MCPB | [Katalog kaydı yayında](https://mcp.tc/i/uyap-editor). Yerel stdio olarak listeleniyor. |
 | MCP.Directory | Açık GitHub deposu | [Ücretsiz başvuru](https://mcp.directory/submit) alındı. Katalog incelemesi bekleniyor. |
 | MCP Market | Açık GitHub deposu | [Ücretsiz sıraya](https://mcpmarket.com/submit) alındı. Katalog, başvuru sırasında yaklaşık 4–6 hafta bekleme süresi gösterdi. |
-| MCPServers.org | Açık GitHub deposu ve Registry kimliği | [Ücretsiz başvuru](https://mcpservers.org/submit) alındı. Katalog incelemesi bekleniyor. |
-| AllMCPs | Açık GitHub deposu | [Başvuru inceleme sırasında](https://allmcps.com/mcp/uyap-editor-mcp). |
-| TensorBlock MCP Index | Açık GitHub deposu | [Katalog başvurusu](https://github.com/TensorBlock/awesome-mcp-servers/issues/6544) incelemeye açık. |
+| MCPServers.org | Açık GitHub deposu ve Registry kimliği | [Katalog kaydı yayında](https://mcpservers.org/ja/servers/umutoku/uyap-editor-mcp). |
+| AllMCPs | Açık GitHub deposu | [Katalog kaydı yayında](https://allmcps.com/mcp/uyap-editor-mcp). |
+| TensorBlock MCP Index | Açık GitHub deposu | [Katalog PR’ı birleşti](https://github.com/TensorBlock/awesome-mcp-servers/pull/6545). |
 | Awesome MCP Servers | Açık GitHub deposu | [Listeye ekleme isteği](https://github.com/punkpeye/awesome-mcp-servers/pull/20224) incelemeye açık. |
 | Socketlist | GitHub `mcp-server` konu etiketi | [Keşif etiketi](https://github.com/topics/mcp-server) depoya eklendi. Katalogda görünürlük henüz doğrulanmadı. |
 | MCP.so | Açık GitHub deposu | [Başvuru gönderildi](https://github.com/chatmcp/mcpso/issues/1#issuecomment-7041150758). Katalog kaydı bekliyor. |
@@ -17,7 +17,7 @@
 | Claude Desktop | GitHub’dan Windows `.mcpb` dosyasını indirip elle ekleme | MCPB manifesti doğrulandı. Katalog başvuru formu Google oturumu istiyor. [Kurulum ve başvuru](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop) |
 | Antigravity IDE | `mcp_config.json` dosyasına yerel stdio ayarlarını ekleme | Kurulum komutu README’de. Resmî Plugin Marketplace, doğrulanmış eklenti paketi ve iş ortağı başvurusu istiyor. [MCP kurulumu](https://antigravity.google/docs/mcp) · [Mağaza başvurusu](https://antigravity.google/blog/plugin-marketplace-in-antigravity/) |
 | ChatGPT | Web için uzak MCP, masaüstü kataloğu için masaüstü eklentisi | Proje yerel stdio paketi olarak dağıtılır. OpenAI’nin yerel MCP katalog başvurusu onaylı iş ortaklarına açık. [OpenAI masaüstü başvurusu](https://developers.openai.com/plugins/deploy/desktop-only) |
-| Glama | Açık GitHub deposu | Add Server ekranı hesapla giriş istiyor. [Glama başvuru rehberi](https://glama.ai/mcp/faq) |
+| Glama | Açık GitHub deposu | [Katalog kaydı yayında](https://glama.ai/mcp/servers/Umutoku/uyap-editor-mcp). Windows’a özgü çalışma zamanı Glama’da puanlanmadı. |
 | PulseMCP | Topluluk kataloğu | Yeni başvurular geçici olarak durduruldu. [PulseMCP durumu](https://www.pulsemcp.com/submit) |
 | Codex, Claude Code, Gemini CLI ve OpenCode | Yerel stdio komutu | Kurulum komutları README’de. |
 

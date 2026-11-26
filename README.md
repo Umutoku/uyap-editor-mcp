@@ -192,6 +192,8 @@ Kalan 31 eylem kaydının 5’i imza, sertifika ve portal işlemlerine, 10’u s
 
 ## MCP katalogları
 
+[![Umutoku/uyap-editor-mcp MCP server](https://glama.ai/mcp/servers/Umutoku/uyap-editor-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Umutoku/uyap-editor-mcp)
+
 Windows ZIP ve MCPB paketleri [GitHub Releases](https://github.com/Umutoku/uyap-editor-mcp/releases/latest) üzerinden indirilebilir. `io.github.Umutoku/uyap-editor-mcp` kaydı [resmî MCP Registry’de](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.Umutoku%2Fuyap-editor-mcp/versions/0.19.0) yayında. Uygulama içi mağazalar kendi başvuru ve inceleme süreçlerini yürütür. [Katalog durumu](docs/PUBLISHING.md)
 
 ## Geliştirme
